@@ -24,7 +24,25 @@ document.addEventListener("DOMContentLoaded", () => {
     loadData();
     renderList();
     setInterval(checkAlarms, 5000);
+
+    // Fermer le menu déroulant lors d'un clic à l'extérieur
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-btn')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    };
 });
+
+function toggleDropdown(event) {
+    event.stopPropagation();
+    document.getElementById("plusDropdown").classList.toggle("show");
+}
 
 function loadData() {
     const saved = localStorage.getItem("pwa_notes_data");
@@ -40,7 +58,6 @@ function loadData() {
         saveData();
     }
     
-    // Charger le son personnalisé si existant
     const savedAudio = localStorage.getItem("pwa_custom_audio");
     if (savedAudio) {
         document.getElementById("alarmAudio").src = savedAudio;
@@ -51,7 +68,6 @@ function saveData() {
     localStorage.setItem("pwa_notes_data", JSON.stringify(notesData));
 }
 
-// Tri automatique par date/heure urgente
 function sortNotes() {
     notesData.sort((a, b) => {
         if (!a.datetime) return 1;
@@ -65,8 +81,7 @@ function renderList() {
     const listContainer = document.getElementById("emailList");
     listContainer.innerHTML = "";
 
-    // Filtrage et recherche
-    const filtered = notesData.filter((note, index) => {
+    const filtered = notesData.filter((note) => {
         const matchesSearch = (note.email || '').toLowerCase().includes(searchQuery) || 
                               (note.desc || '').toLowerCase().includes(searchQuery);
         if (!matchesSearch) return false;
@@ -96,12 +111,18 @@ function renderList() {
         const alarmIcon = note.alarmEnabled ? "🔔 Activée" : "🔕 Désactivée";
         const statusText = note.checked ? "✅ Terminée" : "⏳ En cours";
 
+        // Affichage structuré ligne par ligne
         item.innerHTML = `
             <div class="email-info">
-                <span class="email-text">${displayEmail}</span>
-                <span class="email-meta">${displayDesc} — 🕒 ${displayTime} | ${alarmIcon} | ${statusText}</span>
+                <div class="email-title-row">${displayEmail}</div>
+                <div class="email-details-group">
+                    <div class="detail-line">📝 ${displayDesc}</div>
+                    <div class="detail-line">🕒 ${displayTime}</div>
+                    <div class="detail-line">Statut alarme : ${alarmIcon}</div>
+                    <div class="detail-line">État : ${statusText}</div>
+                </div>
             </div>
-            <span style="color: var(--text-secondary); font-size: 1.2rem;">›</span>
+            <span style="color: var(--text-secondary); font-size: 1.2rem; padding-left: 10px;">›</span>
         `;
 
         item.onclick = () => openModal(originalIndex);
@@ -216,7 +237,6 @@ function deleteCurrentNote() {
     }
 }
 
-// Gestion active de l'alarme (Snooze & Stop)
 function checkAlarms() {
     const now = new Date();
     const nowFormatted = now.getFullYear() + '-' +
@@ -267,7 +287,7 @@ function stopActiveAlarm() {
     audio.currentTime = 0;
     document.getElementById("alarmOverlay").classList.remove("active");
     if (activeAlarmNoteIndex !== null) {
-        notesData[activeAlarmNoteIndex].alarmEnabled = false; // Désactiver l'alarme après arrêt
+        notesData[activeAlarmNoteIndex].alarmEnabled = false;
         saveData();
         renderList();
     }
@@ -295,7 +315,6 @@ function snoozeActiveAlarm(minutes) {
     activeAlarmNoteIndex = null;
 }
 
-// Choix du son personnalisé
 function setCustomAudio(event) {
     const file = event.target.files[0];
     if (file) {
@@ -310,7 +329,6 @@ function setCustomAudio(event) {
     }
 }
 
-// Export JSON & CSV
 function exportJSON() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notesData, null, 2));
     const dlAnchor = document.createElement('a');
@@ -342,7 +360,6 @@ function exportCSV() {
     dlAnchor.remove();
 }
 
-// Importation/Restauration
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -389,7 +406,6 @@ function importData(event) {
     reader.readAsText(file);
 }
 
-// Mode Sombre / Clair (Toggle)
 function toggleTheme() {
     const html = document.documentElement;
     const currentTheme = html.getAttribute("data-theme");
@@ -398,7 +414,6 @@ function toggleTheme() {
     localStorage.setItem("pwa_theme", newTheme);
 }
 
-// Charger le thème enregistré au démarrage
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("pwa_theme");
     if (savedTheme) {
