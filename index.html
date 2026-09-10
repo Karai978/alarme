@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA Notes & Alarme - Ergonomique</title>
+    <title>PWA Notes & Alarme - Menus Déroulants</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -29,16 +29,23 @@
                 <input type="text" id="searchInput" placeholder="Rechercher par e-mail ou description..." oninput="handleSearch()">
             </div>
 
-            <!-- Onglets de filtrage + Menu Plus -->
+            <!-- Zone des 2 Menus Déroulants -->
             <div class="filter-tabs">
-                <button class="tab-btn active" onclick="setFilter('all', this)">Tous</button>
-                <button class="tab-btn" onclick="setFilter('pending', this)">En cours</button>
-                <button class="tab-btn" onclick="setFilter('completed', this)">Terminées</button>
-                <button class="tab-btn" onclick="setFilter('active-alarm', this)">Alarmes actives</button>
                 
-                <!-- Menu déroulant Plus -->
+                <!-- Menu déroulant 1 : Filtres d'état -->
                 <div class="dropdown">
-                    <button class="tab-btn dropdown-btn" onclick="toggleDropdown(event)">⚙️ Plus ▾</button>
+                    <button id="filterDropdownBtn" class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'filterDropdown')">📌 Filtre : Tous ▾</button>
+                    <div id="filterDropdown" class="dropdown-content">
+                        <button onclick="setFilter('all', 'Tous')">Tous</button>
+                        <button onclick="setFilter('pending', 'En cours')">En cours</button>
+                        <button onclick="setFilter('completed', 'Terminées')">Terminées</button>
+                        <button onclick="setFilter('active-alarm', 'Alarmes actives')">Alarmes actives</button>
+                    </div>
+                </div>
+
+                <!-- Menu déroulant 2 : Plus (Import/Export) -->
+                <div class="dropdown">
+                    <button class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'plusDropdown')">⚙️ Plus ▾</button>
                     <div id="plusDropdown" class="dropdown-content">
                         <button onclick="exportJSON()">💾 Export JSON</button>
                         <button onclick="exportCSV()">📊 Export CSV</button>
@@ -48,6 +55,7 @@
                         </label>
                     </div>
                 </div>
+
             </div>
 
             <!-- Configuration audio -->
@@ -63,7 +71,7 @@
         </div>
     </div>
 
-    <!-- Tableau flottant (Modal de création/modification) -->
+    <!-- Modal d'édition -->
     <div id="noteModal" class="modal-overlay">
         <div class="modal-card">
             <h2 class="modal-title" id="modalTitleHeading">Détails de la note</h2>
@@ -98,7 +106,7 @@
         </div>
     </div>
 
-    <!-- Écran d'alarme active (Snooze / Stop) -->
+    <!-- Écran d'alarme active -->
     <div id="alarmOverlay" class="alarm-overlay">
         <div class="alarm-alert-card">
             <div class="alarm-pulse-icon">⏰</div>
