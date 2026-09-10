@@ -120,7 +120,7 @@ button:active {
     gap: 10px;
     align-items: center;
     position: relative;
-    overflow-x: visible; /* Important pour ne pas tronquer les sous-menus */
+    overflow-x: visible;
     padding-bottom: 5px;
 }
 
@@ -173,6 +173,7 @@ button:active {
     box-sizing: border-box;
     display: block;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .dropdown-content button:last-child, .dropdown-item-label:last-child {
@@ -181,14 +182,6 @@ button:active {
 
 .dropdown-content button:hover, .dropdown-item-label:hover {
     background-color: var(--input-bg);
-}
-
-.audio-picker-container {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
 }
 
 /* --- LISTE STRUCTURÉE LIGNE PAR LIGNE --- */
