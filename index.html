@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA Notes & Alarme Mobile</title>
+    <title>PWA Notes & Alarme - Individuel</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -13,12 +13,13 @@
             --success-hover: #059669;
             --danger: #ef4444;
             --danger-hover: #dc2626;
-            --bg: #0f172a;               /* Fond sombre Slate 900 */
-            --card-bg: #1e293b;          /* Fond des éléments Slate 800 */
+            --bg: #0f172a;
+            --card-bg: #1e293b;
             --text: #f8fafc;
             --text-secondary: #94a3b8;
             --border: #334155;
             --input-bg: #0f172a;
+            --modal-bg: #1e293b;
         }
 
         body {
@@ -35,7 +36,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 600px;
         }
 
         .header {
@@ -82,8 +83,134 @@
         .btn-success {
             background: var(--success);
         }
+        .btn-success:hover {
+            background: var(--success-hover);
+        }
+        .btn-danger {
+            background: var(--danger);
+        }
+        .btn-danger:hover {
+            background: var(--danger-hover);
+        }
 
-        /* --- STYLES DES INPUTS --- */
+        /* --- LISTE DES EMAILS --- */
+        .email-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .email-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .email-item:hover {
+            border-color: var(--primary);
+            background: #253349;
+        }
+
+        .email-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .email-text {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .email-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .email-item.triggered {
+            border-color: var(--danger);
+            animation: pulse-border 1.2s infinite alternate;
+        }
+
+        @keyframes pulse-border {
+            from { background-color: #1e293b; border-color: var(--danger); }
+            to { background-color: #450a0a; border-color: #f87171; }
+        }
+
+        /* --- TABLEAU FLOTTANT (MODAL) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--modal-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+            color: #f1f5f9;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
         input[type="text"], input[type="email"], input[type="datetime-local"] {
             width: 100%;
             box-sizing: border-box;
@@ -102,84 +229,48 @@
             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
         }
 
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
         input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             accent-color: var(--primary);
             cursor: pointer;
         }
 
-        /* --- LISTE ET CARTES MOBILE --- */
-        .notes-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .note-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            transition: border-color 0.2s;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        .card-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.15);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .input-group label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-secondary);
+        .modal-alarm-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            border-radius: 8px;
         }
 
-        /* --- ALARME DÉCLENCHÉE --- */
-        .note-card.triggered {
-            border-color: var(--danger);
-            animation: pulse-border 1.2s infinite alternate;
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
         }
 
-        @keyframes pulse-border {
-            from { background-color: #1e293b; border-color: var(--danger); }
-            to { background-color: #450a0a; border-color: #f87171; }
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.95rem;
         }
 
-        /* Mode Ordinateur / Tablette (Écran large) */
+        .btn-cancel {
+            background: #334155;
+        }
+        .btn-cancel:hover {
+            background: #475569;
+        }
+
         @media (min-width: 640px) {
             .header {
                 flex-direction: row;
@@ -202,16 +293,52 @@
 
     <div class="app-container">
         <div class="header">
-            <h1>📋 Mes Notes & Alarmes</h1>
+            <h1>📧 Liste des E-mails</h1>
             <div class="controls">
-                <button class="btn-success" onclick="enableAudio()">🔔 Activer le son</button>
-                <button onclick="addRow()">+ Ajouter</button>
+                <button class="btn-success" onclick="enableAudio()">🔔 Activer le son global</button>
+                <button onclick="openModal()">+ Ajouter</button>
             </div>
         </div>
 
-        <!-- Conteneur des cartes mobile -->
-        <div id="notesContainer" class="notes-list">
-            <!-- Généré dynamiquement -->
+        <!-- Liste principale des adresses e-mail -->
+        <div id="emailList" class="email-list">
+            <!-- Rempli dynamiquement -->
+        </div>
+    </div>
+
+    <!-- Tableau flottant (Modal) -->
+    <div id="noteModal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 class="modal-title" id="modalTitleHeading">Détails de la note</h2>
+            
+            <div class="input-group">
+                <label>Adresse Mail</label>
+                <input type="email" id="modalEmail" placeholder="nom@exemple.com">
+            </div>
+
+            <div class="input-group">
+                <label>Date & Heure</label>
+                <input type="datetime-local" id="modalDatetime">
+            </div>
+
+            <div class="input-group">
+                <label>Description</label>
+                <input type="text" id="modalDesc" placeholder="Détails de la note...">
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="modalChecked">
+                <span>Marquer comme terminé (État)</span>
+            </div>
+
+            <!-- Bouton d'activation d'alarme individuel -->
+            <button type="button" id="modalAlarmBtn" class="modal-alarm-btn btn-success" onclick="toggleModalAlarm()">🔔 Activer l'alarme</button>
+
+            <div class="modal-actions">
+                <button class="btn-danger" id="modalDeleteBtn" onclick="deleteCurrentNote()">Delete</button>
+                <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+                <button class="btn-success" onclick="saveCurrentNote()">Save</button>
+            </div>
         </div>
     </div>
 
@@ -219,6 +346,9 @@
 
     <script>
         let audioPermissionGranted = false;
+        let notesData = [];
+        let currentEditIndex = null; 
+        let currentAlarmEnabled = false; // État local de l'alarme dans la modale
 
         function enableAudio() {
             const audio = document.getElementById("alarmAudio");
@@ -226,7 +356,7 @@
                 audio.pause();
                 audio.currentTime = 0;
                 audioPermissionGranted = true;
-                alert("✨ Sonneries activées sur votre mobile !");
+                alert("✨ Sonneries globales activées !");
             }).catch(err => console.error("Erreur audio:", err));
 
             if ("Notification" in window && Notification.permission !== "granted") {
@@ -235,88 +365,155 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            loadTable();
+            loadData();
+            renderList();
             setInterval(checkAlarms, 5000);
         });
 
-        function addRow(data = { checked: false, email: '', datetime: '', desc: '', triggered: false }) {
-            const container = document.getElementById("notesContainer");
-            const card = document.createElement("div");
-            card.className = "note-card";
+        function loadData() {
+            const saved = localStorage.getItem("pwa_notes_data");
+            if (saved) {
+                try {
+                    notesData = JSON.parse(saved);
+                } catch (e) {
+                    notesData = [];
+                }
+            }
+            if (notesData.length === 0) {
+                notesData = [{ checked: false, email: 'exemple@domaine.com', datetime: '', desc: 'Première note', triggered: false, alarmEnabled: false }];
+                saveData();
+            }
+        }
 
-            if (data.triggered) {
-                card.classList.add("triggered");
+        function saveData() {
+            localStorage.setItem("pwa_notes_data", JSON.stringify(notesData));
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById("emailList");
+            listContainer.innerHTML = "";
+
+            notesData.forEach((note, index) => {
+                const item = document.createElement("div");
+                item.className = "email-item";
+                if (note.triggered && note.alarmEnabled) {
+                    item.classList.add("triggered");
+                }
+
+                const displayEmail = note.email ? note.email : "(Sans adresse mail)";
+                const displayDesc = note.desc ? note.desc : "Aucune description";
+                const displayTime = note.datetime ? note.datetime.replace('T', ' à ') : "Pas d'alarme";
+                const alarmIcon = note.alarmEnabled ? "🔔 Activée" : "🔕 Désactivée";
+
+                item.innerHTML = `
+                    <div class="email-info">
+                        <span class="email-text">${displayEmail}</span>
+                        <span class="email-meta">${displayDesc} — 🕒 ${displayTime} | ${alarmIcon}</span>
+                    </div>
+                    <span style="color: var(--text-secondary); font-size: 1.2rem;">›</span>
+                `;
+
+                item.onclick = () => openModal(index);
+                listContainer.appendChild(item);
+            });
+        }
+
+        function openModal(index = null) {
+            currentEditIndex = index;
+            const modal = document.getElementById("noteModal");
+            const heading = document.getElementById("modalTitleHeading");
+            const deleteBtn = document.getElementById("modalDeleteBtn");
+
+            if (index !== null) {
+                heading.textContent = "Modifier la note";
+                deleteBtn.style.display = "block";
+                const note = notesData[index];
+                document.getElementById("modalEmail").value = note.email || '';
+                document.getElementById("modalDatetime").value = note.datetime || '';
+                document.getElementById("modalDesc").value = note.desc || '';
+                document.getElementById("modalChecked").checked = note.checked || false;
+                currentAlarmEnabled = note.alarmEnabled || false;
+            } else {
+                heading.textContent = "Nouvelle note";
+                deleteBtn.style.display = "none";
+                document.getElementById("modalEmail").value = '';
+                document.getElementById("modalDatetime").value = '';
+                document.getElementById("modalDesc").value = '';
+                document.getElementById("modalChecked").checked = false;
+                currentAlarmEnabled = false; // Par défaut désactivé pour une nouvelle note
             }
 
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="card-status">
-                        <input type="checkbox" ${data.checked ? 'checked' : ''} onchange="saveTable()">
-                        <span>Terminé</span>
-                    </div>
-                    <button class="btn-delete" onclick="deleteCard(this)">Supprimer</button>
-                </div>
-
-                <div class="input-group">
-                    <label>Adresse Mail</label>
-                    <input type="email" value="${data.email || ''}" placeholder="nom@exemple.com" oninput="saveTable()">
-                </div>
-
-                <div class="input-group">
-                    <label>Date & Heure d'alarme</label>
-                    <input type="datetime-local" value="${data.datetime || ''}" onchange="resetAlarm(this); saveTable();">
-                </div>
-
-                <div class="input-group">
-                    <label>Description</label>
-                    <input type="text" value="${data.desc || ''}" placeholder="Détails de la note..." oninput="saveTable()">
-                </div>
-            `;
-
-            container.appendChild(card);
-            saveTable();
+            updateAlarmButtonUI();
+            modal.classList.add("active");
         }
 
-        function resetAlarm(input) {
-            const card = input.closest(".note-card");
-            card.classList.remove("triggered");
-            delete card.dataset.triggered;
-            saveTable();
+        function toggleModalAlarm() {
+            currentAlarmEnabled = !currentAlarmEnabled;
+            updateAlarmButtonUI();
         }
 
-        function deleteCard(button) {
-            button.closest(".note-card").remove();
-            saveTable();
-        }
-
-        function saveTable() {
-            const cards = document.querySelectorAll(".note-card");
-            const data = [];
-
-            cards.forEach(card => {
-                const checked = card.querySelector("input[type='checkbox']").checked;
-                const email = card.querySelector("input[type='email']").value;
-                const datetime = card.querySelector("input[type='datetime-local']").value;
-                const desc = card.querySelector("input[type='text']").value;
-                const triggered = card.dataset.triggered === "true";
-
-                data.push({ checked, email, datetime, desc, triggered });
-            });
-
-            localStorage.setItem("pwa_notes_data", JSON.stringify(data));
-        }
-
-        function loadTable() {
-            const savedData = JSON.parse(localStorage.getItem("pwa_notes_data"));
-            if (savedData && savedData.length > 0) {
-                savedData.forEach(row => addRow(row));
+        function updateAlarmButtonUI() {
+            const btn = document.getElementById("modalAlarmBtn");
+            if (currentAlarmEnabled) {
+                btn.textContent = "🔕 Désactiver l'alarme";
+                btn.className = "modal-alarm-btn btn-danger";
             } else {
-                addRow();
+                btn.textContent = "🔔 Activer l'alarme";
+                btn.className = "modal-alarm-btn btn-success";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById("noteModal").classList.remove("active");
+            currentEditIndex = null;
+        }
+
+        function saveCurrentNote() {
+            const email = document.getElementById("modalEmail").value;
+            const datetime = document.getElementById("modalDatetime").value;
+            const desc = document.getElementById("modalDesc").value;
+            const checked = document.getElementById("modalChecked").checked;
+
+            if (currentEditIndex !== null) {
+                if (notesData[currentEditIndex].datetime !== datetime) {
+                    notesData[currentEditIndex].triggered = false;
+                }
+                notesData[currentEditIndex] = { 
+                    ...notesData[currentEditIndex], 
+                    email, 
+                    datetime, 
+                    desc, 
+                    checked, 
+                    alarmEnabled: currentAlarmEnabled 
+                };
+            } else {
+                notesData.push({ 
+                    checked, 
+                    email, 
+                    datetime, 
+                    desc, 
+                    triggered: false, 
+                    alarmEnabled: currentAlarmEnabled 
+                });
+            }
+
+            saveData();
+            renderList();
+            closeModal();
+        }
+
+        function deleteCurrentNote() {
+            if (currentEditIndex !== null) {
+                if (confirm("Voulez-vous vraiment supprimer cette note ?")) {
+                    notesData.splice(currentEditIndex, 1);
+                    saveData();
+                    renderList();
+                    closeModal();
+                }
             }
         }
 
         function checkAlarms() {
-            const cards = document.querySelectorAll(".note-card");
             const now = new Date();
             const nowFormatted = now.getFullYear() + '-' +
                 String(now.getMonth() + 1).padStart(2, '0') + '-' +
@@ -324,15 +521,14 @@
                 String(now.getHours()).padStart(2, '0') + ':' +
                 String(now.getMinutes()).padStart(2, '0');
 
-            cards.forEach(card => {
-                const datetimeInput = card.querySelector("input[type='datetime-local']");
-                const descInput = card.querySelector("input[type='text']");
-                const targetTime = datetimeInput.value;
+            let updated = false;
 
-                if (targetTime && targetTime <= nowFormatted && card.dataset.triggered !== "true") {
-                    card.dataset.triggered = "true";
-                    card.classList.add("triggered");
-                    
+            notesData.forEach(note => {
+                // L'alarme ne se déclenche que si elle est activée individuellement (alarmEnabled === true)
+                if (note.alarmEnabled && note.datetime && note.datetime <= nowFormatted && !note.triggered) {
+                    note.triggered = true;
+                    updated = true;
+
                     if (audioPermissionGranted) {
                         const audio = document.getElementById("alarmAudio");
                         audio.play();
@@ -340,15 +536,19 @@
 
                     if ("Notification" in window && Notification.permission === "granted") {
                         new Notification("⏰ Rappel d'alarme !", {
-                            body: descInput.value || "L'heure programmée est atteinte.",
+                            body: note.desc || note.email || "L'heure programmée est atteinte.",
                             icon: "icon-192.png"
                         });
                     }
 
-                    alert("⏰ ALARME ACTIVÉE !\n\nNote : " + (descInput.value || "Aucune description"));
-                    saveTable();
+                    alert("⏰ ALARME ACTIVÉE !\n\nE-mail : " + (note.email || "N/A") + "\nDescription : " + (note.desc || "Aucune"));
                 }
             });
+
+            if (updated) {
+                saveData();
+                renderList();
+            }
         }
     </script>
 
