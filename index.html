@@ -44,17 +44,22 @@
                 </div>
 
                 <!-- Menu déroulant 2 : Plus (Import/Export) -->
-                <div class="dropdown">
-                    <button class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'plusDropdown')">⚙️ Plus ▾</button>
-                    <div id="plusDropdown" class="dropdown-content">
-                        <button onclick="exportJSON()">💾 Export JSON</button>
-                        <button onclick="exportCSV()">📊 Export CSV</button>
-                        <label class="dropdown-item-label">
-                            📂 Importer un fichier
-                            <input type="file" id="importFile" accept=".json,.csv" onchange="importData(event)" hidden>
-                        </label>
-                    </div>
-                </div>
+                <!-- Remplacer le menu "plusDropdown" existant par ceci : -->
+<div class="dropdown">
+    <button class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'plusDropdown')">⚙️ Plus ▾</button>
+    <div id="plusDropdown" class="dropdown-content">
+        <button onclick="exportJSON()">💾 Export JSON</button>
+        <button onclick="exportCSV()">📊 Export CSV</button>
+        <label class="dropdown-item-label">
+            📂 Importer un fichier
+            <input type="file" id="importFile" accept=".json,.csv" onchange="importData(event)" hidden>
+        </label>
+        <label class="dropdown-item-label">
+            🎵 Son personnalisé (MP3/WAV)
+            <input type="file" id="customAudioInput" accept="audio/*" onchange="setCustomAudio(event)" hidden>
+        </label>
+    </div>
+</div>
 
             </div>
 
