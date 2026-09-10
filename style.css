@@ -103,15 +103,7 @@ button:active {
 .btn-danger { background: var(--danger); }
 .btn-danger:hover { background: var(--danger-hover); }
 .btn-warning { background: var(--warning); color: #000; }
-.btn-secondary {
-    background: var(--border);
-    color: var(--text);
-    padding: 8px 10px;
-    font-size: 0.8rem;
-    border-radius: 8px;
-}
 
-/* Recherche & Filtres */
 .search-bar input {
     width: 100%;
     padding: 10px 12px;
@@ -122,9 +114,11 @@ button:active {
     box-sizing: border-box;
 }
 
+/* Barre d'onglets avec Menu Déroulant */
 .filter-tabs {
     display: flex;
-    gap: 5px;
+    gap: 6px;
+    align-items: center;
     overflow-x: auto;
     padding-bottom: 5px;
 }
@@ -133,10 +127,11 @@ button:active {
     background: var(--card-bg);
     border: 1px solid var(--border);
     color: var(--text-secondary);
-    padding: 6px 12px;
+    padding: 7px 14px;
     font-size: 0.8rem;
     border-radius: 20px;
     white-space: nowrap;
+    cursor: pointer;
 }
 
 .tab-btn.active {
@@ -145,14 +140,51 @@ button:active {
     border-color: var(--primary);
 }
 
-.data-tools {
-    display: flex;
-    gap: 5px;
+/* Dropdown Plus */
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
-.data-tools button, .file-label {
-    flex: 1;
-    text-align: center;
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background-color: var(--card-bg);
+    min-width: 170px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropdown-content button, .dropdown-item-label {
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+    border-radius: 0;
+    box-sizing: border-box;
+    display: block;
     cursor: pointer;
+}
+
+.dropdown-content button:last-child, .dropdown-item-label:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content button:hover, .dropdown-item-label:hover {
+    background-color: var(--input-bg);
 }
 
 .audio-picker-container {
@@ -163,7 +195,7 @@ button:active {
     gap: 4px;
 }
 
-/* --- LISTE DES EMAILS --- */
+/* --- LISTE ET AFFICHAGE SUR PLUSIEURS LIGNES --- */
 .email-list {
     display: flex;
     flex-direction: column;
@@ -190,18 +222,28 @@ button:active {
 .email-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    width: 100%;
 }
 
-.email-text {
-    font-weight: 600;
+.email-title-row {
+    font-weight: 700;
     font-size: 1rem;
     color: var(--text);
 }
 
-.email-meta {
-    font-size: 0.8rem;
+.email-details-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.85rem;
     color: var(--text-secondary);
+}
+
+.detail-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .email-item.triggered {
@@ -214,10 +256,9 @@ button:active {
     to { background-color: rgba(239, 68, 68, 0.15); border-color: #f87171; }
 }
 
-/* --- TABLEAU FLOTTANT (MODAL) --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+/* --- MODAL ET OVERLAYS --- */
+.modal-overlay, .alarm-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(15, 23, 42, 0.8);
     display: flex; justify-content: center; align-items: center;
     padding: 20px; box-sizing: border-box;
@@ -225,9 +266,9 @@ button:active {
     z-index: 1000;
 }
 
-.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-overlay.active, .alarm-overlay.active { opacity: 1; pointer-events: auto; }
 
-.modal-card {
+.modal-card, .alarm-alert-card {
     background: var(--modal-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -265,21 +306,9 @@ input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary)
 .modal-actions button { flex: 1; padding: 12px; font-size: 0.95rem; }
 .btn-cancel { background: var(--border); color: var(--text); }
 
-/* --- ÉCRAN ALERTE ACTIVE (Snooze / Stop) --- */
-.alarm-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.95);
-    display: flex; justify-content: center; align-items: center;
-    padding: 20px; box-sizing: border-box;
-    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
-    z-index: 2000;
-}
-.alarm-overlay.active { opacity: 1; pointer-events: auto; }
-.alarm-alert-card {
-    background: var(--modal-bg); border: 2px solid var(--danger);
-    border-radius: 16px; padding: 25px; width: 100%; max-width: 400px;
-    text-align: center; display: flex; flex-direction: column; gap: 15px;
-}
+/* Alarme Pop-up */
+.alarm-overlay { z-index: 2000; background: rgba(15, 23, 42, 0.95); }
+.alarm-alert-card { border: 2px solid var(--danger); text-align: center; }
 .alarm-pulse-icon { font-size: 3rem; animation: bounce 0.8s infinite alternate; }
 @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
 .alarm-alert-actions { display: flex; flex-direction: column; gap: 8px; }
