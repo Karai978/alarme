@@ -63,9 +63,16 @@ function loadData() {
         } catch (e) {
             notesData = [];
         }
-    }
-    if (notesData.length === 0) {
-        notesData = [{ checked: false, email: 'exemple@domaine.com', datetime: '', desc: 'Première note', triggered: false, alarmEnabled: false }];
+    } else {
+        // La note par défaut est créée UNIQUEMENT lors de la première visite
+        notesData = [{ 
+            checked: false, 
+            email: 'exemple@domaine.com', 
+            datetime: '', 
+            desc: 'Première note', 
+            triggered: false, 
+            alarmEnabled: false 
+        }];
         saveData();
     }
     
