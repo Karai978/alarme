@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA Notes & Alarme Pro - Dark Mode</title>
+    <title>PWA Notes & Alarme Mobile</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -13,12 +13,12 @@
             --success-hover: #059669;
             --danger: #ef4444;
             --danger-hover: #dc2626;
-            --bg: #0f172a;               /* Fond principal sombre (Slate 900) */
-            --card-bg: #1e293b;          /* Fond de la carte (Slate 800) */
-            --text: #f8fafc;             /* Texte clair principal */
-            --text-secondary: #94a3b8;   /* Texte secondaire */
-            --border: #334155;           /* Bordures sombres */
-            --input-bg: #0f172a;         /* Fond des zones de saisie */
+            --bg: #0f172a;               /* Fond sombre Slate 900 */
+            --card-bg: #1e293b;          /* Fond des éléments Slate 800 */
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --input-bg: #0f172a;
         }
 
         body {
@@ -26,7 +26,7 @@
             background: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 40px 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -35,153 +35,166 @@
 
         .app-container {
             width: 100%;
-            max-width: 1000px;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
         }
 
         .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 15px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin: 0;
             color: #f1f5f9;
             font-weight: 700;
+            text-align: center;
         }
 
         .controls {
             display: flex;
             gap: 10px;
+            width: 100%;
+        }
+
+        .controls button {
+            flex: 1;
+            padding: 12px 10px;
+            font-size: 0.9rem;
         }
 
         button {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.95rem;
             transition: background 0.2s, transform 0.1s;
         }
 
-        button:hover {
-            background: var(--primary-hover);
-        }
-
         button:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .btn-success {
             background: var(--success);
         }
-        .btn-success:hover {
-            background: var(--success-hover);
-        }
 
-        .table-responsive {
-            overflow-x: auto;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            text-align: left;
-        }
-
-        th, td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.95rem;
-        }
-
-        th {
-            background-color: #0f172a;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
+        /* --- STYLES DES INPUTS --- */
         input[type="text"], input[type="email"], input[type="datetime-local"] {
             width: 100%;
             box-sizing: border-box;
             border: 1px solid var(--border);
-            padding: 8px 12px;
+            padding: 10px 12px;
             font-size: 0.95rem;
-            border-radius: 6px;
+            border-radius: 8px;
             background: var(--input-bg);
             color: var(--text);
-            color-scheme: dark; /* Force l'icône calendrier/heure en clair */
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        input[type="text"]::placeholder, input[type="email"]::placeholder {
-            color: #64748b;
+            color-scheme: dark;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
         }
 
         input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             accent-color: var(--primary);
             cursor: pointer;
+        }
+
+        /* --- LISTE ET CARTES MOBILE --- */
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .note-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.2s;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .card-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
 
         .btn-delete {
             background: rgba(239, 68, 68, 0.15);
             color: #fca5a5;
             border: 1px solid rgba(239, 68, 68, 0.3);
-            width: 32px;
-            height: 32px;
+            padding: 6px 12px;
             border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 0.85rem;
             font-weight: bold;
-            transition: background 0.2s, color 0.2s;
         }
 
-        .btn-delete:hover {
-            background: var(--danger);
-            color: white;
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        /* État Alarme Déclenchée (Mode Sombre) */
-        tr.triggered {
-            background-color: #450a0a !important;
-            animation: pulse-dark 1.2s infinite alternate;
+        .input-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
-        @keyframes pulse-dark {
-            from { background-color: #450a0a; }
-            to { background-color: #7f1d1d; }
+        /* --- ALARME DÉCLENCHÉE --- */
+        .note-card.triggered {
+            border-color: var(--danger);
+            animation: pulse-border 1.2s infinite alternate;
+        }
+
+        @keyframes pulse-border {
+            from { background-color: #1e293b; border-color: var(--danger); }
+            to { background-color: #450a0a; border-color: #f87171; }
+        }
+
+        /* Mode Ordinateur / Tablette (Écran large) */
+        @media (min-width: 640px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .controls {
+                width: auto;
+            }
+            .controls button {
+                flex: none;
+            }
+            h1 {
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -189,28 +202,16 @@
 
     <div class="app-container">
         <div class="header">
-            <h1>📋 Notes & Alarmes (Dark)</h1>
+            <h1>📋 Mes Notes & Alarmes</h1>
             <div class="controls">
                 <button class="btn-success" onclick="enableAudio()">🔔 Activer le son</button>
-                <button onclick="addRow()">+ Nouvelle ligne</button>
+                <button onclick="addRow()">+ Ajouter</button>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table id="notesTable">
-                <thead>
-                    <tr>
-                        <th style="width: 6%; text-align: center;">État</th>
-                        <th style="width: 28%;">Adresse Mail</th>
-                        <th style="width: 26%;">Date & Heure</th>
-                        <th style="width: 34%;">Description</th>
-                        <th style="width: 6%; text-align: center;">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Généré dynamiquement -->
-                </tbody>
-            </table>
+        <!-- Conteneur des cartes mobile -->
+        <div id="notesContainer" class="notes-list">
+            <!-- Généré dynamiquement -->
         </div>
     </div>
 
@@ -225,10 +226,8 @@
                 audio.pause();
                 audio.currentTime = 0;
                 audioPermissionGranted = true;
-                alert("✨ Alarmes sonores activées avec succès !");
-            }).catch(err => {
-                console.error("Erreur audio:", err);
-            });
+                alert("✨ Sonneries activées sur votre mobile !");
+            }).catch(err => console.error("Erreur audio:", err));
 
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
@@ -241,57 +240,65 @@
         });
 
         function addRow(data = { checked: false, email: '', datetime: '', desc: '', triggered: false }) {
-            const tbody = document.getElementById("tableBody");
-            const row = document.createElement("tr");
+            const container = document.getElementById("notesContainer");
+            const card = document.createElement("div");
+            card.className = "note-card";
 
             if (data.triggered) {
-                row.classList.add("triggered");
+                card.classList.add("triggered");
             }
 
-            row.innerHTML = `
-                <td style="text-align: center;">
-                    <input type="checkbox" ${data.checked ? 'checked' : ''} onchange="saveTable()">
-                </td>
-                <td>
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-status">
+                        <input type="checkbox" ${data.checked ? 'checked' : ''} onchange="saveTable()">
+                        <span>Terminé</span>
+                    </div>
+                    <button class="btn-delete" onclick="deleteCard(this)">Supprimer</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Adresse Mail</label>
                     <input type="email" value="${data.email || ''}" placeholder="nom@exemple.com" oninput="saveTable()">
-                </td>
-                <td>
+                </div>
+
+                <div class="input-group">
+                    <label>Date & Heure d'alarme</label>
                     <input type="datetime-local" value="${data.datetime || ''}" onchange="resetAlarm(this); saveTable();">
-                </td>
-                <td>
-                    <input type="text" value="${data.desc || ''}" placeholder="Ajouter une description..." oninput="saveTable()">
-                </td>
-                <td style="text-align: center;">
-                    <button class="btn-delete" onclick="deleteRow(this)" title="Supprimer">✕</button>
-                </td>
+                </div>
+
+                <div class="input-group">
+                    <label>Description</label>
+                    <input type="text" value="${data.desc || ''}" placeholder="Détails de la note..." oninput="saveTable()">
+                </div>
             `;
 
-            tbody.appendChild(row);
+            container.appendChild(card);
             saveTable();
         }
 
         function resetAlarm(input) {
-            const row = input.closest("tr");
-            row.classList.remove("triggered");
-            delete row.dataset.triggered;
+            const card = input.closest(".note-card");
+            card.classList.remove("triggered");
+            delete card.dataset.triggered;
             saveTable();
         }
 
-        function deleteRow(button) {
-            button.closest("tr").remove();
+        function deleteCard(button) {
+            button.closest(".note-card").remove();
             saveTable();
         }
 
         function saveTable() {
-            const rows = document.querySelectorAll("#tableBody tr");
+            const cards = document.querySelectorAll(".note-card");
             const data = [];
 
-            rows.forEach(row => {
-                const checked = row.querySelector("input[type='checkbox']").checked;
-                const email = row.querySelector("input[type='email']").value;
-                const datetime = row.querySelector("input[type='datetime-local']").value;
-                const desc = row.querySelector("input[type='text']").value;
-                const triggered = row.dataset.triggered === "true";
+            cards.forEach(card => {
+                const checked = card.querySelector("input[type='checkbox']").checked;
+                const email = card.querySelector("input[type='email']").value;
+                const datetime = card.querySelector("input[type='datetime-local']").value;
+                const desc = card.querySelector("input[type='text']").value;
+                const triggered = card.dataset.triggered === "true";
 
                 data.push({ checked, email, datetime, desc, triggered });
             });
@@ -309,7 +316,7 @@
         }
 
         function checkAlarms() {
-            const rows = document.querySelectorAll("#tableBody tr");
+            const cards = document.querySelectorAll(".note-card");
             const now = new Date();
             const nowFormatted = now.getFullYear() + '-' +
                 String(now.getMonth() + 1).padStart(2, '0') + '-' +
@@ -317,14 +324,14 @@
                 String(now.getHours()).padStart(2, '0') + ':' +
                 String(now.getMinutes()).padStart(2, '0');
 
-            rows.forEach(row => {
-                const datetimeInput = row.querySelector("input[type='datetime-local']");
-                const descInput = row.querySelector("input[type='text']");
+            cards.forEach(card => {
+                const datetimeInput = card.querySelector("input[type='datetime-local']");
+                const descInput = card.querySelector("input[type='text']");
                 const targetTime = datetimeInput.value;
 
-                if (targetTime && targetTime <= nowFormatted && row.dataset.triggered !== "true") {
-                    row.dataset.triggered = "true";
-                    row.classList.add("triggered");
+                if (targetTime && targetTime <= nowFormatted && card.dataset.triggered !== "true") {
+                    card.dataset.triggered = "true";
+                    card.classList.add("triggered");
                     
                     if (audioPermissionGranted) {
                         const audio = document.getElementById("alarmAudio");
@@ -338,7 +345,7 @@
                         });
                     }
 
-                    alert("⏰ ALARME ACTIVÉE !\n\nDescription : " + (descInput.value || "Aucune description"));
+                    alert("⏰ ALARME ACTIVÉE !\n\nNote : " + (descInput.value || "Aucune description"));
                     saveTable();
                 }
             });
