@@ -2,7 +2,7 @@ let audioPermissionGranted = false;
 let notesData = [];
 let currentEditIndex = null; 
 let currentAlarmEnabled = false;
-let currentFilter = 'all';
+let currentFilter = 'all'; // 'all' par défaut
 let searchQuery = '';
 let activeAlarmNoteIndex = null;
 
@@ -25,23 +25,34 @@ document.addEventListener("DOMContentLoaded", () => {
     renderList();
     setInterval(checkAlarms, 5000);
 
-    // Fermer le menu déroulant lors d'un clic à l'extérieur
+    // Fermeture automatique des menus au clic ailleurs
     window.onclick = function(event) {
         if (!event.target.matches('.dropdown-btn')) {
             const dropdowns = document.getElementsByClassName("dropdown-content");
             for (let i = 0; i < dropdowns.length; i++) {
-                const openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
+                dropdowns[i].classList.remove('show');
             }
         }
     };
 });
 
-function toggleDropdown(event) {
+function toggleDropdown(event, dropdownId) {
     event.stopPropagation();
-    document.getElementById("plusDropdown").classList.toggle("show");
+    // Fermer les autres menus
+    const dropdowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropdowns.length; i++) {
+        if (dropdowns[i].id !== dropdownId) {
+            dropdowns[i].classList.remove('show');
+        }
+    }
+    document.getElementById(dropdownId).classList.toggle("show");
+}
+
+function setFilter(filter, labelText) {
+    currentFilter = filter;
+    document.getElementById("filterDropdownBtn").textContent = `📌 Filtre : ${labelText} ▾`;
+    document.getElementById("filterDropdown").classList.remove("show");
+    renderList();
 }
 
 function loadData() {
@@ -111,7 +122,6 @@ function renderList() {
         const alarmIcon = note.alarmEnabled ? "🔔 Activée" : "🔕 Désactivée";
         const statusText = note.checked ? "✅ Terminée" : "⏳ En cours";
 
-        // Affichage structuré ligne par ligne
         item.innerHTML = `
             <div class="email-info">
                 <div class="email-title-row">${displayEmail}</div>
@@ -132,13 +142,6 @@ function renderList() {
 
 function handleSearch() {
     searchQuery = document.getElementById("searchInput").value.toLowerCase();
-    renderList();
-}
-
-function setFilter(filter, btnElement) {
-    currentFilter = filter;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    btnElement.classList.add('active');
     renderList();
 }
 
