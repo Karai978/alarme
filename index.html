@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA Notes & Alarme - Version Complète</title>
+    <title>PWA Notes & Alarme - Ergonomique</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -29,22 +29,28 @@
                 <input type="text" id="searchInput" placeholder="Rechercher par e-mail ou description..." oninput="handleSearch()">
             </div>
 
-            <!-- Onglets de filtrage -->
+            <!-- Onglets de filtrage + Menu Plus -->
             <div class="filter-tabs">
                 <button class="tab-btn active" onclick="setFilter('all', this)">Tous</button>
                 <button class="tab-btn" onclick="setFilter('pending', this)">En cours</button>
                 <button class="tab-btn" onclick="setFilter('completed', this)">Terminées</button>
                 <button class="tab-btn" onclick="setFilter('active-alarm', this)">Alarmes actives</button>
+                
+                <!-- Menu déroulant Plus -->
+                <div class="dropdown">
+                    <button class="tab-btn dropdown-btn" onclick="toggleDropdown(event)">⚙️ Plus ▾</button>
+                    <div id="plusDropdown" class="dropdown-content">
+                        <button onclick="exportJSON()">💾 Export JSON</button>
+                        <button onclick="exportCSV()">📊 Export CSV</button>
+                        <label class="dropdown-item-label">
+                            📂 Importer un fichier
+                            <input type="file" id="importFile" accept=".json,.csv" onchange="importData(event)" hidden>
+                        </label>
+                    </div>
+                </div>
             </div>
 
-            <!-- Actions de données & Audio personnalisé -->
-            <div class="data-tools">
-                <button class="btn-secondary" onclick="exportJSON()">Export JSON</button>
-                <button class="btn-secondary" onclick="exportCSV()">Export CSV</button>
-                <label class="btn-secondary file-label">
-                    Import <input type="file" id="importFile" accept=".json,.csv" onchange="importData(event)" hidden>
-                </label>
-            </div>
+            <!-- Configuration audio -->
             <div class="audio-picker-container">
                 <label class="audio-label">Son personnalisé (MP3/WAV) :</label>
                 <input type="file" id="customAudioInput" accept="audio/*" onchange="setCustomAudio(event)">
