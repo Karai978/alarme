@@ -1,0 +1,286 @@
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --success: #10b981;
+    --success-hover: #059669;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --warning: #f59e0b;
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border: #334155;
+    --input-bg: #0f172a;
+    --modal-bg: #1e293b;
+}
+
+[data-theme="light"] {
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #0f172a;
+    --text-secondary: #64748b;
+    --border: #cbd5e1;
+    --input-bg: #f1f5f9;
+    --modal-bg: #ffffff;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: background 0.3s, color 0.3s;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.btn-icon {
+    background: var(--border);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.controls button {
+    flex: 1;
+    padding: 12px 10px;
+    font-size: 0.9rem;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+.btn-success { background: var(--success); }
+.btn-success:hover { background: var(--success-hover); }
+.btn-danger { background: var(--danger); }
+.btn-danger:hover { background: var(--danger-hover); }
+.btn-warning { background: var(--warning); color: #000; }
+.btn-secondary {
+    background: var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+}
+
+/* Recherche & Filtres */
+.search-bar input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    box-sizing: border-box;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.tab-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.data-tools {
+    display: flex;
+    gap: 5px;
+}
+.data-tools button, .file-label {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+}
+
+.audio-picker-container {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* --- LISTE DES EMAILS --- */
+.email-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.email-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.email-item:hover {
+    border-color: var(--primary);
+}
+
+.email-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.email-text {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.email-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.email-item.triggered {
+    border-color: var(--danger);
+    animation: pulse-border 1.2s infinite alternate;
+}
+
+@keyframes pulse-border {
+    from { background-color: var(--card-bg); border-color: var(--danger); }
+    to { background-color: rgba(239, 68, 68, 0.15); border-color: #f87171; }
+}
+
+/* --- TABLEAU FLOTTANT (MODAL) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    display: flex; justify-content: center; align-items: center;
+    padding: 20px; box-sizing: border-box;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+.modal-card {
+    background: var(--modal-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px; width: 100%; max-width: 450px;
+    display: flex; flex-direction: column; gap: 15px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    transform: translateY(20px); transition: transform 0.2s ease;
+}
+
+.modal-overlay.active .modal-card { transform: translateY(0); }
+
+.modal-title {
+    font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text);
+    border-bottom: 1px solid var(--border); padding-bottom: 10px;
+}
+
+.input-group { display: flex; flex-direction: column; gap: 5px; }
+.input-group label {
+    font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;
+}
+
+input[type="text"], input[type="email"], input[type="datetime-local"] {
+    width: 100%; box-sizing: border-box; border: 1px solid var(--border);
+    padding: 10px 12px; font-size: 0.95rem; border-radius: 8px;
+    background: var(--input-bg); color: var(--text);
+}
+
+.checkbox-container {
+    display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-secondary);
+}
+input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+
+.modal-alarm-btn { width: 100%; padding: 12px; font-size: 0.95rem; font-weight: 600; border-radius: 8px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 5px; }
+.modal-actions button { flex: 1; padding: 12px; font-size: 0.95rem; }
+.btn-cancel { background: var(--border); color: var(--text); }
+
+/* --- ÉCRAN ALERTE ACTIVE (Snooze / Stop) --- */
+.alarm-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.95);
+    display: flex; justify-content: center; align-items: center;
+    padding: 20px; box-sizing: border-box;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    z-index: 2000;
+}
+.alarm-overlay.active { opacity: 1; pointer-events: auto; }
+.alarm-alert-card {
+    background: var(--modal-bg); border: 2px solid var(--danger);
+    border-radius: 16px; padding: 25px; width: 100%; max-width: 400px;
+    text-align: center; display: flex; flex-direction: column; gap: 15px;
+}
+.alarm-pulse-icon { font-size: 3rem; animation: bounce 0.8s infinite alternate; }
+@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+.alarm-alert-actions { display: flex; flex-direction: column; gap: 8px; }
+.alarm-alert-actions button { padding: 12px; font-size: 1rem; }
