@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notes-alarme-complet-v9';
+const CACHE_NAME = 'notes-alarme-complet-v10';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -11,55 +11,63 @@ const ASSETS_TO_CACHE = [
 ];
 
 const UI_PATCH_CSS = `
-/* Dashboard: compact title + tags on one aligned line */
-.content-header { min-width:0; }
-.content-header > .title-tag-row {
+/* Dashboard: keep title, tags and tools aligned without changing the DOM */
+.content-header {
+  min-width:0;
   display:flex;
   align-items:center;
+  justify-content:flex-start;
   gap:8px;
-  min-width:0;
-  flex:1 1 auto;
-  overflow:hidden;
 }
-.title-tag-row h2 {
+.content-header > div:first-child {
+  display:contents;
+}
+.content-header > div:first-child #viewTitle {
   flex:0 0 auto;
-  white-space:nowrap;
+  min-width:0;
   margin:0;
+  white-space:nowrap;
 }
-.title-tag-row.has-tags h2::after { content:' -'; }
-.title-tag-row #viewSubtitle { display:none !important; }
-.title-tag-row #tagBar {
+.content-header > div:first-child #viewSubtitle {
+  display:none !important;
+}
+.content-header > #tagBar {
   display:flex;
   align-items:center;
   gap:5px;
-  flex:0 1 auto;
+  flex:1 1 auto;
   min-width:0;
-  max-width:100%;
   margin:0;
   overflow-x:auto;
   scrollbar-width:none;
 }
-.title-tag-row #tagBar::-webkit-scrollbar { display:none; }
-.title-tag-row #tagBar .tag-label {
+.content-header > #tagBar::-webkit-scrollbar { display:none; }
+.content-header > #tagBar .tag-label {
   flex:0 0 auto;
   white-space:nowrap;
   font-size:.72rem;
   color:var(--text-secondary);
 }
-.title-tag-row #tagBar .tag-label::after { content:' :'; }
-.title-tag-row #tagBar .tag-chip { padding:4px 8px; font-size:.67rem; }
+.content-header > #tagBar .tag-label::after { content:' :'; }
+.content-header > #tagBar .tag-chip {
+  flex:0 0 auto;
+  padding:4px 8px;
+  font-size:.67rem;
+  white-space:nowrap;
+}
+.content-header > #tagBar:empty { display:none; }
 
-/* Dashboard: the note list is always the vertical scroll area */
+/* The content area is the only vertical scroll container for the note list */
 .app-shell { min-height:0; }
 .workspace {
   min-height:0;
-  height:0;
-  flex:1 1 auto;
+  flex:1 1 0%;
   overflow:hidden;
 }
 .content-area {
+  min-width:0;
   min-height:0;
-  height:100%;
+  flex:1 1 auto;
   overflow-x:hidden;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -73,45 +81,21 @@ const UI_PATCH_CSS = `
 }
 
 @media (max-width:720px) {
-  .title-tag-row { gap:6px; }
-  .title-tag-row #tagBar { flex:1 1 auto; min-width:0; }
-  .title-tag-row #tagBar .tag-chip { max-width:130px; overflow:hidden; text-overflow:ellipsis; }
+  .content-header { gap:6px; }
+  .content-header > #tagBar { flex:1 1 auto; }
+  .content-header > #tagBar .tag-chip {
+    max-width:130px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
   .content-area { padding-top:14px; }
 }
 @media (max-width:390px) {
-  .title-tag-row { gap:5px; }
-  .title-tag-row h2 { font-size:1.05rem; }
-  .title-tag-row #tagBar .tag-label { font-size:.66rem; }
-  .title-tag-row #tagBar .tag-chip { font-size:.62rem; padding:3px 7px; }
+  .content-header { gap:5px; }
+  .content-header > #viewTitle { font-size:1.05rem; }
+  .content-header > #tagBar .tag-label { font-size:.66rem; }
+  .content-header > #tagBar .tag-chip { font-size:.62rem; padding:3px 7px; }
 }
-`;
-
-const UI_PATCH_JS = `
-(function applyDashboardLayoutPatch() {
-  function alignDashboardHeader() {
-    const header = document.querySelector('.content-header');
-    const titleWrap = header?.firstElementChild;
-    const tagBar = document.getElementById('tagBar');
-    if (!titleWrap || !tagBar) return;
-
-    titleWrap.classList.add('title-tag-row');
-    if (tagBar.parentElement !== titleWrap) titleWrap.appendChild(tagBar);
-
-    const syncTags = () => titleWrap.classList.toggle('has-tags', tagBar.children.length > 0);
-    syncTags();
-    if (!tagBar.__layoutObserver) {
-      const observer = new MutationObserver(syncTags);
-      observer.observe(tagBar, { childList:true, subtree:true });
-      tagBar.__layoutObserver = observer;
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', alignDashboardHeader, { once:true });
-  } else {
-    alignDashboardHeader();
-  }
-})();
 `;
 
 self.addEventListener('install', (event) => {
@@ -140,13 +124,6 @@ self.addEventListener('fetch', (event) => {
       const css = await response.text();
       return new Response(css + '\n' + UI_PATCH_CSS, {
         headers: { 'Content-Type': 'text/css; charset=utf-8' }
-      });
-    }
-
-    if (url.pathname.endsWith('/script.js')) {
-      const js = await response.text();
-      return new Response(js + '\n' + UI_PATCH_JS, {
-        headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
       });
     }
 
