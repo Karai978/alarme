@@ -11,42 +11,175 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Compact search + filter control */
-        .search-filter-row { display:flex; align-items:center; gap:8px; width:100%; }
-        .search-filter-row .search-wrap { flex:1; min-width:0; }
-        .filter-select-wrap { position:relative; flex:0 0 auto; }
-        .filter-select { min-height:42px; max-width:145px; padding:0 32px 0 11px; border:1px solid var(--border); border-radius:11px; background:var(--card-bg); color:var(--text); font-size:.82rem; font-weight:700; appearance:auto; }
-        .filter-select:focus { outline:2px solid var(--primary); outline-offset:1px; }
+        /* Unified dashboard search + filter */
+        .search-filter-row {
+            display:grid;
+            grid-template-columns:minmax(0,1fr) 150px;
+            align-items:stretch;
+            gap:0;
+            width:100%;
+            margin-top:13px;
+            border:1px solid var(--border);
+            border-radius:13px;
+            background:var(--input-bg);
+            overflow:hidden;
+        }
+        .search-filter-row .search-wrap { margin:0; min-width:0; }
+        .search-filter-row .search-wrap input {
+            height:44px;
+            border:0;
+            border-radius:0;
+            background:transparent;
+            box-shadow:none;
+        }
+        .search-filter-row .search-wrap input:focus { box-shadow:none; }
+        .search-filter-row .filter-select-wrap {
+            min-width:0;
+            border-left:1px solid var(--border);
+        }
+        .filter-select {
+            width:100%;
+            height:44px;
+            min-height:44px;
+            padding:0 30px 0 11px;
+            border:0;
+            border-radius:0;
+            background:var(--card-bg);
+            color:var(--text);
+            font-size:.78rem;
+            font-weight:750;
+            outline:none;
+        }
+        .filter-select:focus { box-shadow:inset 0 0 0 2px var(--primary); }
         .smart-filters { display:none !important; }
 
-        /* Smaller, easier-to-use note form */
-        .modal-card { max-width:440px; max-height:min(82dvh, 680px); padding:14px; gap:10px; }
-        .modal-header { padding-bottom:7px; }
-        .modal-card .input-group { gap:4px; }
-        .modal-card input[type="text"], .modal-card input[type="datetime-local"], .modal-card select { min-height:38px; padding:8px 10px; font-size:.88rem; }
-        .modal-card textarea { min-height:82px; height:82px; padding:9px 10px; font-size:.88rem; line-height:1.4; resize:none; }
-        .modal-card .input-row { gap:8px; }
-        .modal-card .feature-row { gap:7px; }
-        .modal-card .feature-toggle { min-height:38px; padding:7px 9px; }
-        .modal-card .color-section { padding:2px 0; }
-        .modal-card .attachment-section { gap:5px; }
-        .modal-card .attachment-item { padding:5px 8px; }
-        .modal-card .modal-alarm-btn { min-height:39px; padding:8px; }
-        .modal-card .modal-actions button { min-height:40px; padding:8px; }
-        .modal-card small { font-size:.7rem; }
+        /* Compact, centered, responsive note form */
+        .modal-overlay {
+            align-items:center;
+            justify-content:center;
+            padding:16px;
+        }
+        .modal-card {
+            width:min(620px, 100%);
+            max-width:620px;
+            max-height:min(90dvh, 760px);
+            padding:16px;
+            gap:0;
+            border-radius:18px;
+        }
+        .modal-header { padding-bottom:8px; margin-bottom:9px; }
+        .modal-card .input-group { gap:4px; margin-bottom:8px; }
+        .modal-card input[type="text"],
+        .modal-card input[type="datetime-local"],
+        .modal-card select {
+            min-height:40px;
+            height:40px;
+            padding:8px 10px;
+            font-size:.86rem;
+        }
+        .modal-card textarea {
+            min-height:76px;
+            height:76px;
+            padding:8px 10px;
+            font-size:.86rem;
+            line-height:1.4;
+            resize:vertical;
+        }
+        .modal-card .input-row { gap:8px; margin-bottom:0; }
 
-        @media (max-width:520px) {
-            .search-filter-row { gap:6px; }
-            .filter-select { max-width:126px; min-height:40px; font-size:.76rem; padding-left:8px; padding-right:24px; }
-            .modal-overlay { padding:6px; align-items:flex-end; }
-            .modal-card { width:100%; max-width:none; max-height:88dvh; border-radius:16px 16px 10px 10px; padding:12px; gap:8px; }
-            .modal-card textarea { height:72px; min-height:72px; }
-            .modal-card .input-row { grid-template-columns:1fr 1fr; }
+        /* Status on the left, favorite/pin controls on the right */
+        .status-feature-row {
+            display:grid;
+            grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+            gap:8px;
+            align-items:end;
+            margin-bottom:8px;
+        }
+        .status-feature-row .input-group { margin-bottom:0; }
+        .feature-row {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:6px;
+            margin:0;
+            min-height:40px;
+        }
+        .feature-toggle {
+            min-height:40px;
+            height:40px;
+            padding:6px 8px;
+            border-radius:10px;
+            font-size:.74rem;
+            white-space:nowrap;
+        }
+        .feature-toggle span { overflow:hidden; text-overflow:ellipsis; }
+        .feature-panel-label {
+            display:block;
+            margin-bottom:4px;
+            color:var(--text-secondary);
+            font-size:.68rem;
+            font-weight:800;
+            text-transform:uppercase;
+            letter-spacing:.04em;
         }
 
-        @media (max-width:360px) {
-            .filter-select { max-width:112px; font-size:.72rem; }
-            .modal-card .input-row { grid-template-columns:1fr; }
+        /* Color uses the same compact dropdown pattern */
+        .color-section {
+            margin:0 0 8px;
+        }
+        .color-section > label { display:block; margin-bottom:4px; }
+        #colorPicker {
+            width:100%;
+            min-height:40px;
+            height:40px;
+            border:1px solid var(--border);
+            border-radius:10px;
+            background:var(--input-bg);
+            color:var(--text);
+            padding:8px 10px;
+            font-size:.86rem;
+            outline:none;
+        }
+        #colorPicker:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(124,108,255,.1); }
+
+        .modal-card .attachment-section { gap:5px; margin-bottom:8px; }
+        .modal-card .attachment-item { padding:5px 8px; }
+        .modal-card .modal-alarm-btn { min-height:40px; height:40px; padding:7px 10px; margin-bottom:8px; }
+        .modal-card .modal-actions { display:grid; grid-template-columns:1fr 1fr 1.2fr; gap:7px; }
+        .modal-card .modal-actions button { min-height:40px; height:40px; padding:7px 9px; }
+        .modal-card small { font-size:.68rem; }
+
+        @media (max-width:720px) {
+            .modal-card { width:min(560px, 100%); max-height:92dvh; }
+            .modal-card .input-row { grid-template-columns:1fr 1fr; }
+        }
+        @media (max-width:520px) {
+            .topbar { padding-left:12px; padding-right:12px; }
+            .search-filter-row { grid-template-columns:minmax(0,1fr) 126px; }
+            .filter-select { font-size:.73rem; padding-left:8px; padding-right:20px; }
+            .modal-overlay { padding:10px; align-items:center; }
+            .modal-card {
+                width:100%;
+                max-width:520px;
+                max-height:94dvh;
+                padding:13px;
+                border-radius:16px;
+            }
+            .modal-card .input-row { grid-template-columns:1fr 1fr; gap:7px; }
+            .status-feature-row { grid-template-columns:1fr 1fr; gap:7px; }
+            .feature-row { gap:5px; }
+            .feature-toggle { font-size:.7rem; }
+            .modal-card textarea { height:70px; min-height:70px; }
+            .modal-card .modal-actions { grid-template-columns:1fr 1fr 1.25fr; }
+        }
+        @media (max-width:390px) {
+            .search-filter-row { grid-template-columns:minmax(0,1fr) 112px; }
+            .filter-select { font-size:.69rem; }
+            .modal-card { padding:11px; }
+            .modal-card .input-row { grid-template-columns:1fr; gap:0; }
+            .status-feature-row { grid-template-columns:1fr; }
+            .feature-row { grid-template-columns:1fr 1fr; }
+            .modal-card .modal-actions { grid-template-columns:1fr 1fr; }
+            .modal-card .modal-actions .btn-primary { grid-column:1 / -1; }
         }
     </style>
 </head>
@@ -124,43 +257,56 @@
             <div><span class="eyebrow">NOTE</span><h2 id="modalTitleHeading">Nouvelle note</h2></div>
             <button class="modal-close" onclick="closeModal()" aria-label="Fermer">×</button>
         </div>
+
         <div class="input-group">
             <label for="modalEmail">Titre / Adresse mail</label>
             <input type="text" id="modalEmail" placeholder="Ex. Appeler le client ou nom@exemple.com">
         </div>
+
         <div class="input-row">
             <div class="input-group"><label for="modalCategory">Dossier</label><select id="modalCategory"></select></div>
             <div class="input-group"><label for="modalDatetime">Date & heure</label><input type="datetime-local" id="modalDatetime"></div>
         </div>
+
         <div class="input-group">
             <label for="modalDesc">Description</label>
-            <textarea id="modalDesc" rows="4" placeholder="Écrivez votre note..." spellcheck="true"></textarea>
+            <textarea id="modalDesc" rows="3" placeholder="Écrivez votre note..." spellcheck="true"></textarea>
         </div>
-        <div class="input-group">
-            <label for="modalStatus">Statut</label>
-            <select id="modalStatus">
-                <option value="not_started">○ Pas démarré</option>
-                <option value="waiting">⏳ En attente</option>
-                <option value="done">✓ Terminé</option>
-            </select>
+
+        <div class="status-feature-row">
+            <div class="input-group">
+                <label for="modalStatus">Statut</label>
+                <select id="modalStatus">
+                    <option value="not_started">○ Pas démarré</option>
+                    <option value="waiting">⏳ En attente</option>
+                    <option value="done">✓ Terminé</option>
+                </select>
+            </div>
+            <div>
+                <span class="feature-panel-label">Options</span>
+                <div class="feature-row">
+                    <button id="favoriteBtn" class="feature-toggle" onclick="toggleNoteFlag('favorite')">☆ <span>Favori</span></button>
+                    <button id="pinnedBtn" class="feature-toggle" onclick="toggleNoteFlag('pinned')">📌 <span>Épingler</span></button>
+                </div>
+            </div>
         </div>
-        <div class="feature-row">
-            <button id="favoriteBtn" class="feature-toggle" onclick="toggleNoteFlag('favorite')">☆ <span>Favori</span></button>
-            <button id="pinnedBtn" class="feature-toggle" onclick="toggleNoteFlag('pinned')">📌 <span>Épingler</span></button>
-        </div>
+
         <div class="input-group">
             <label for="modalTags">Tags</label>
             <input type="text" id="modalTags" placeholder="travail, urgent, client...">
             <small>Séparez les tags par des virgules.</small>
         </div>
+
         <div class="color-section">
-            <label>Couleur de la note</label>
-            <div id="colorPicker" class="color-picker" role="radiogroup" aria-label="Couleur"></div>
+            <label for="colorPicker">Couleur de la note</label>
+            <select id="colorPicker" aria-label="Couleur de la note"></select>
         </div>
+
         <div class="attachment-section">
             <div class="attachment-header"><span>Pièces jointes</span><label class="attachment-add-btn">＋ Ajouter<input type="file" id="attachmentInput" accept=".md,.txt,.json,text/markdown,text/plain,application/json" hidden onchange="addAttachment(event)"></label></div>
             <div id="attachmentList" class="attachment-list"><span class="empty-attachments">Aucune pièce jointe</span></div>
         </div>
+
         <button type="button" id="modalAlarmBtn" class="modal-alarm-btn btn-success" onclick="toggleModalAlarm()">🔔 Activer l’alarme</button>
         <div class="modal-actions">
             <button class="btn-danger" id="modalDeleteBtn" onclick="deleteCurrentNote()">Supprimer</button>
@@ -186,6 +332,31 @@
 <audio id="alarmAudio" src="alarm.mp3" preload="auto" loop></audio>
 <script src="script.js"></script>
 <script>
+/* Keep the existing data model while presenting color as a compact dropdown. */
+const NOTE_COLOR_LABELS = {
+    default: '⚪ Gris / Standard',
+    blue: '🔵 Bleu',
+    green: '🟢 Vert',
+    yellow: '🟡 Jaune',
+    red: '🔴 Rouge',
+    purple: '🟣 Violet',
+    pink: '🩷 Rose'
+};
+function renderColorPicker() {
+    const picker = document.getElementById('colorPicker');
+    if (!picker) return;
+    picker.innerHTML = Object.entries(NOTE_COLOR_LABELS)
+        .map(([value, label]) => `<option value="${value}">${label}</option>`)
+        .join('');
+    picker.value = currentNoteColor;
+    picker.onchange = () => { currentNoteColor = picker.value; };
+}
+function selectNoteColor(color) {
+    currentNoteColor = color;
+    const picker = document.getElementById('colorPicker');
+    if (picker) picker.value = color;
+}
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js', {scope:'./'})
         .then(reg => console.log('Service Worker enregistré:', reg.scope))
