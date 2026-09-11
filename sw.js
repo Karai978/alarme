@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notes-alarme-complet-v6';
+const CACHE_NAME = 'notes-alarme-complet-v7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -27,7 +27,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => cachedResponse || fetch(event.request))
   );
