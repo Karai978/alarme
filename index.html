@@ -3,47 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA Notes & Alarme</title>
+    <meta name="theme-color" content="#0f172a">
+    <title>Notes & Alarmes</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="app-container">
-        <div class="header">
+        <header class="header">
             <div class="header-top">
-                <h1>📧 E-mails & Alarmes</h1>
+                <h1>📝 Note</h1>
                 <div class="header-actions">
-                    <button class="btn-icon" onclick="toggleTheme()" title="Changer de thème">☀️/🌙</button>
+                    <button class="btn-icon" onclick="enableAudio()" title="Activer le son" aria-label="Activer le son">🔔</button>
+                    <button class="btn-icon" onclick="openModal()" title="Ajouter une note" aria-label="Ajouter une note">＋</button>
+                    <button class="btn-icon" onclick="toggleTheme()" title="Changer de thème" aria-label="Changer de thème">☀️/🌙</button>
                 </div>
             </div>
 
-            <!-- Contrôles globaux -->
-            <div class="controls">
-                <button class="btn-success" onclick="enableAudio()">🔔 Activer le son</button>
-                <button onclick="openModal()">+ Ajouter</button>
-            </div>
-
-            <!-- Barre de recherche -->
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Rechercher par e-mail ou description..." oninput="handleSearch()">
+                <input type="text" id="searchInput" placeholder="Rechercher une note..." oninput="handleSearch()">
             </div>
 
-            <!-- Zone des 2 Menus Déroulants -->
             <div class="filter-tabs">
-                
-                <!-- Menu déroulant 1 : Filtres d'état -->
                 <div class="dropdown">
-                    <button id="filterDropdownBtn" class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'filterDropdown')">📌 Filtre : Tous ▾</button>
+                    <button id="filterDropdownBtn" class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'filterDropdown')">📌 À faire ▾</button>
                     <div id="filterDropdown" class="dropdown-content">
-                        <button onclick="setFilter('all', 'Tous')">Tous</button>
-                        <button onclick="setFilter('pending', 'En cours')">En cours</button>
-                        <button onclick="setFilter('completed', 'Terminées')">Terminées</button>
-                        <button onclick="setFilter('active-alarm', 'Alarmes actives')">Alarmes actives</button>
+                        <button onclick="setFilter('todo', 'À faire')">📋 À faire</button>
+                        <button onclick="setFilter('not_started', 'Pas démarré')">○ Pas démarré</button>
+                        <button onclick="setFilter('waiting', 'En attente')">⏳ En attente</button>
+                        <button onclick="setFilter('done', 'Terminé')">✓ Terminé</button>
                     </div>
                 </div>
 
-                <!-- Menu déroulant 2 : Plus (Import/Export/Son) -->
                 <div class="dropdown">
                     <button class="tab-btn dropdown-btn" onclick="toggleDropdown(event, 'plusDropdown')">⚙️ Plus ▾</button>
                     <div id="plusDropdown" class="dropdown-content">
@@ -59,52 +51,63 @@
                         </label>
                     </div>
                 </div>
-
             </div>
-        </div>
+        </header>
 
-        <!-- Liste principale -->
-        <div id="emailList" class="email-list">
-            <!-- Rempli dynamiquement -->
-        </div>
+        <main id="emailList" class="email-list" aria-live="polite"></main>
     </div>
 
-    <!-- Modal d'édition -->
     <div id="noteModal" class="modal-overlay">
         <div class="modal-card">
             <h2 class="modal-title" id="modalTitleHeading">Détails de la note</h2>
-            
+
             <div class="input-group">
-                <label>Adresse Mail</label>
+                <label for="modalEmail">Adresse Mail</label>
                 <input type="email" id="modalEmail" placeholder="nom@exemple.com">
             </div>
 
             <div class="input-group">
-                <label>Date & Heure</label>
+                <label for="modalDatetime">Date & Heure</label>
                 <input type="datetime-local" id="modalDatetime">
             </div>
 
             <div class="input-group">
-                <label>Description</label>
-                <input type="text" id="modalDesc" placeholder="Détails de la note...">
+                <label for="modalDesc">Description</label>
+                <textarea id="modalDesc" rows="7" placeholder="Écrivez votre note..." spellcheck="true"></textarea>
             </div>
 
-            <div class="checkbox-container">
-                <input type="checkbox" id="modalChecked">
-                <span>Marquer comme terminé (État)</span>
+            <div class="input-group">
+                <label for="modalStatus">Statut</label>
+                <select id="modalStatus">
+                    <option value="not_started">○ Pas démarré</option>
+                    <option value="waiting">⏳ En attente</option>
+                    <option value="done">✓ Terminé</option>
+                </select>
+            </div>
+
+            <div class="attachment-section">
+                <div class="attachment-header">
+                    <span>Pièces jointes</span>
+                    <label class="attachment-add-btn" title="Ajouter une pièce jointe">
+                        ＋ Ajouter
+                        <input type="file" id="attachmentInput" accept=".md,.txt,.json,text/markdown,text/plain,application/json" hidden onchange="addAttachment(event)">
+                    </label>
+                </div>
+                <div id="attachmentList" class="attachment-list">
+                    <span class="empty-attachments">Aucune pièce jointe</span>
+                </div>
             </div>
 
             <button type="button" id="modalAlarmBtn" class="modal-alarm-btn btn-success" onclick="toggleModalAlarm()">🔔 Activer l'alarme</button>
 
             <div class="modal-actions">
-                <button class="btn-danger" id="modalDeleteBtn" onclick="deleteCurrentNote()">Delete</button>
+                <button class="btn-danger" id="modalDeleteBtn" onclick="deleteCurrentNote()">Supprimer</button>
                 <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-                <button class="btn-success" onclick="saveCurrentNote()">Save</button>
+                <button class="btn-success" onclick="saveCurrentNote()">Enregistrer</button>
             </div>
         </div>
     </div>
 
-    <!-- Écran d'alarme active -->
     <div id="alarmOverlay" class="alarm-overlay">
         <div class="alarm-alert-card">
             <div class="alarm-pulse-icon">⏰</div>
