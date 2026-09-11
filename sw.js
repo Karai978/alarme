@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notes-alarme-complet-v10';
+const CACHE_NAME = 'notes-alarme-complet-v11';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -57,8 +57,12 @@ const UI_PATCH_CSS = `
 }
 .content-header > #tagBar:empty { display:none; }
 
-/* The content area is the only vertical scroll container for the note list */
-.app-shell { min-height:0; }
+/* Robust Android/Chrome scrolling: only the note grid scrolls */
+.app-shell {
+  min-height:0;
+  height:100dvh;
+  overflow:hidden;
+}
 .workspace {
   min-height:0;
   flex:1 1 0%;
@@ -68,16 +72,23 @@ const UI_PATCH_CSS = `
   min-width:0;
   min-height:0;
   flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  overscroll-behavior:contain;
+}
+.notes-grid {
+  min-width:0;
+  min-height:0;
+  flex:1 1 auto;
   overflow-x:hidden;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
   touch-action:pan-y;
-  scrollbar-width:thin;
-}
-.notes-grid {
-  min-height:0;
   align-content:start;
+  scrollbar-width:thin;
+  padding-bottom:max(30px, env(safe-area-inset-bottom));
 }
 
 @media (max-width:720px) {
