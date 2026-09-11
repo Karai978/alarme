@@ -10,6 +10,45 @@
     <title>Notes & Alarmes</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Compact search + filter control */
+        .search-filter-row { display:flex; align-items:center; gap:8px; width:100%; }
+        .search-filter-row .search-wrap { flex:1; min-width:0; }
+        .filter-select-wrap { position:relative; flex:0 0 auto; }
+        .filter-select { min-height:42px; max-width:145px; padding:0 32px 0 11px; border:1px solid var(--border); border-radius:11px; background:var(--card-bg); color:var(--text); font-size:.82rem; font-weight:700; appearance:auto; }
+        .filter-select:focus { outline:2px solid var(--primary); outline-offset:1px; }
+        .smart-filters { display:none !important; }
+
+        /* Smaller, easier-to-use note form */
+        .modal-card { max-width:440px; max-height:min(82dvh, 680px); padding:14px; gap:10px; }
+        .modal-header { padding-bottom:7px; }
+        .modal-card .input-group { gap:4px; }
+        .modal-card input[type="text"], .modal-card input[type="datetime-local"], .modal-card select { min-height:38px; padding:8px 10px; font-size:.88rem; }
+        .modal-card textarea { min-height:82px; height:82px; padding:9px 10px; font-size:.88rem; line-height:1.4; resize:none; }
+        .modal-card .input-row { gap:8px; }
+        .modal-card .feature-row { gap:7px; }
+        .modal-card .feature-toggle { min-height:38px; padding:7px 9px; }
+        .modal-card .color-section { padding:2px 0; }
+        .modal-card .attachment-section { gap:5px; }
+        .modal-card .attachment-item { padding:5px 8px; }
+        .modal-card .modal-alarm-btn { min-height:39px; padding:8px; }
+        .modal-card .modal-actions button { min-height:40px; padding:8px; }
+        .modal-card small { font-size:.7rem; }
+
+        @media (max-width:520px) {
+            .search-filter-row { gap:6px; }
+            .filter-select { max-width:126px; min-height:40px; font-size:.76rem; padding-left:8px; padding-right:24px; }
+            .modal-overlay { padding:6px; align-items:flex-end; }
+            .modal-card { width:100%; max-width:none; max-height:88dvh; border-radius:16px 16px 10px 10px; padding:12px; gap:8px; }
+            .modal-card textarea { height:72px; min-height:72px; }
+            .modal-card .input-row { grid-template-columns:1fr 1fr; }
+        }
+
+        @media (max-width:360px) {
+            .filter-select { max-width:112px; font-size:.72rem; }
+            .modal-card .input-row { grid-template-columns:1fr; }
+        }
+    </style>
 </head>
 <body>
 <div class="app-shell">
@@ -27,18 +66,29 @@
             </div>
         </div>
 
-        <div class="search-wrap">
-            <span class="search-icon">⌕</span>
-            <input id="searchInput" type="search" autocomplete="off" placeholder="Rechercher dans vos notes..." oninput="handleSearch()">
-            <button id="clearSearchBtn" class="clear-search" onclick="clearSearch()" aria-label="Effacer la recherche">×</button>
+        <div class="search-filter-row">
+            <div class="search-wrap">
+                <span class="search-icon">⌕</span>
+                <input id="searchInput" type="search" autocomplete="off" placeholder="Rechercher dans vos notes..." oninput="handleSearch()">
+                <button id="clearSearchBtn" class="clear-search" onclick="clearSearch()" aria-label="Effacer la recherche">×</button>
+            </div>
+            <div class="filter-select-wrap">
+                <select id="filterSelect" class="filter-select" aria-label="Filtrer les notes" onchange="setFilter(this.value, this.options[this.selectedIndex].text)">
+                    <option value="todo">📋 À faire</option>
+                    <option value="favorite">★ Favoris</option>
+                    <option value="pinned">📌 Épinglés</option>
+                    <option value="waiting">⏳ En attente</option>
+                    <option value="done">✓ Terminées</option>
+                </select>
+            </div>
         </div>
 
         <div class="smart-filters" role="tablist" aria-label="Filtres">
-            <button class="filter-chip active" data-filter="todo" onclick="setFilter('todo','À faire')">À faire</button>
-            <button class="filter-chip" data-filter="favorite" onclick="setFilter('favorite','Favoris')">★ Favoris</button>
-            <button class="filter-chip" data-filter="pinned" onclick="setFilter('pinned','Épinglés')">📌 Épinglés</button>
-            <button class="filter-chip" data-filter="waiting" onclick="setFilter('waiting','En attente')">⏳ En attente</button>
-            <button class="filter-chip" data-filter="done" onclick="setFilter('done','Terminées')">✓ Terminées</button>
+            <button class="filter-chip active" data-filter="todo">À faire</button>
+            <button class="filter-chip" data-filter="favorite">★ Favoris</button>
+            <button class="filter-chip" data-filter="pinned">📌 Épinglés</button>
+            <button class="filter-chip" data-filter="waiting">⏳ En attente</button>
+            <button class="filter-chip" data-filter="done">✓ Terminées</button>
         </div>
     </header>
 
@@ -51,10 +101,7 @@
 
         <main class="content-area">
             <div class="content-header">
-                <div>
-                    <h2 id="viewTitle">À faire</h2>
-                    <span id="viewSubtitle">Vos notes actives</span>
-                </div>
+                <div><h2 id="viewTitle">À faire</h2><span id="viewSubtitle">Vos notes actives</span></div>
                 <div class="content-tools">
                     <button class="small-action" onclick="openSortMenu(event)" title="Trier">↕ Trier</button>
                     <div id="sortMenu" class="sort-menu">
@@ -77,24 +124,17 @@
             <div><span class="eyebrow">NOTE</span><h2 id="modalTitleHeading">Nouvelle note</h2></div>
             <button class="modal-close" onclick="closeModal()" aria-label="Fermer">×</button>
         </div>
-
         <div class="input-group">
             <label for="modalEmail">Titre / Adresse mail</label>
             <input type="text" id="modalEmail" placeholder="Ex. Appeler le client ou nom@exemple.com">
         </div>
         <div class="input-row">
-            <div class="input-group">
-                <label for="modalCategory">Dossier</label>
-                <select id="modalCategory"></select>
-            </div>
-            <div class="input-group">
-                <label for="modalDatetime">Date & heure</label>
-                <input type="datetime-local" id="modalDatetime">
-            </div>
+            <div class="input-group"><label for="modalCategory">Dossier</label><select id="modalCategory"></select></div>
+            <div class="input-group"><label for="modalDatetime">Date & heure</label><input type="datetime-local" id="modalDatetime"></div>
         </div>
         <div class="input-group">
             <label for="modalDesc">Description</label>
-            <textarea id="modalDesc" rows="7" placeholder="Écrivez votre note..." spellcheck="true"></textarea>
+            <textarea id="modalDesc" rows="4" placeholder="Écrivez votre note..." spellcheck="true"></textarea>
         </div>
         <div class="input-group">
             <label for="modalStatus">Statut</label>
@@ -104,12 +144,10 @@
                 <option value="done">✓ Terminé</option>
             </select>
         </div>
-
         <div class="feature-row">
             <button id="favoriteBtn" class="feature-toggle" onclick="toggleNoteFlag('favorite')">☆ <span>Favori</span></button>
             <button id="pinnedBtn" class="feature-toggle" onclick="toggleNoteFlag('pinned')">📌 <span>Épingler</span></button>
         </div>
-
         <div class="input-group">
             <label for="modalTags">Tags</label>
             <input type="text" id="modalTags" placeholder="travail, urgent, client...">
@@ -119,12 +157,10 @@
             <label>Couleur de la note</label>
             <div id="colorPicker" class="color-picker" role="radiogroup" aria-label="Couleur"></div>
         </div>
-
         <div class="attachment-section">
             <div class="attachment-header"><span>Pièces jointes</span><label class="attachment-add-btn">＋ Ajouter<input type="file" id="attachmentInput" accept=".md,.txt,.json,text/markdown,text/plain,application/json" hidden onchange="addAttachment(event)"></label></div>
             <div id="attachmentList" class="attachment-list"><span class="empty-attachments">Aucune pièce jointe</span></div>
         </div>
-
         <button type="button" id="modalAlarmBtn" class="modal-alarm-btn btn-success" onclick="toggleModalAlarm()">🔔 Activer l’alarme</button>
         <div class="modal-actions">
             <button class="btn-danger" id="modalDeleteBtn" onclick="deleteCurrentNote()">Supprimer</button>
@@ -136,9 +172,7 @@
 
 <div id="alarmOverlay" class="alarm-overlay">
     <div class="alarm-alert-card">
-        <div class="alarm-pulse-icon">⏰</div>
-        <span class="eyebrow">RAPPEL</span>
-        <h2>Alarme déclenchée</h2>
+        <div class="alarm-pulse-icon">⏰</div><span class="eyebrow">RAPPEL</span><h2>Alarme déclenchée</h2>
         <p id="alarmAlertInfo" class="alarm-info-text">Détails...</p>
         <div class="alarm-alert-actions">
             <button class="btn-danger" onclick="stopActiveAlarm()">Stopper</button>
@@ -150,7 +184,6 @@
 
 <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 <audio id="alarmAudio" src="alarm.mp3" preload="auto" loop></audio>
-
 <script src="script.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
