@@ -25,35 +25,46 @@
     --modal-bg: #ffffff;
 }
 
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
     margin: 0;
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    box-sizing: border-box;
+    padding: 0;
+    overflow: hidden;
     transition: background 0.3s, color 0.3s;
 }
 
 .app-container {
     width: 100%;
     max-width: 600px;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--bg);
+    position: relative;
+    z-index: 20;
+    border-bottom: 1px solid var(--border);
 }
 
 .header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
 }
 
 h1 {
@@ -63,26 +74,28 @@ h1 {
     font-weight: 700;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .btn-icon {
-    background: var(--border);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 9px;
     cursor: pointer;
     font-size: 1rem;
 }
 
-.controls {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-.controls button {
-    flex: 1;
-    padding: 12px 10px;
-    font-size: 0.9rem;
-}
+.btn-icon:hover { border-color: var(--primary); }
 
 button {
     background: var(--primary);
@@ -94,15 +107,14 @@ button {
     transition: background 0.2s, transform 0.1s;
 }
 
-button:active {
-    transform: scale(0.97);
-}
+button:active { transform: scale(0.97); }
 
 .btn-success { background: var(--success); }
 .btn-success:hover { background: var(--success-hover); }
 .btn-danger { background: var(--danger); }
 .btn-danger:hover { background: var(--danger-hover); }
 .btn-warning { background: var(--warning); color: #000; }
+.btn-secondary { background: var(--border); color: var(--text); }
 
 .search-bar input {
     width: 100%;
@@ -111,24 +123,30 @@ button:active {
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text);
-    box-sizing: border-box;
 }
 
-/* Zone des Menus Déroulants */
+.search-bar input:focus,
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
 .filter-tabs {
     display: flex;
     gap: 10px;
     align-items: center;
     position: relative;
-    overflow-x: visible;
-    padding-bottom: 5px;
+    overflow: visible;
+    padding-bottom: 2px;
 }
 
 .tab-btn {
     background: var(--card-bg);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 8px 16px;
+    padding: 8px 14px;
     font-size: 0.85rem;
     border-radius: 20px;
     white-space: nowrap;
@@ -136,10 +154,7 @@ button:active {
     font-weight: 600;
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
+.dropdown { position: relative; display: inline-block; }
 
 .dropdown-content {
     display: none;
@@ -148,7 +163,7 @@ button:active {
     top: 100%;
     margin-top: 6px;
     background-color: var(--card-bg);
-    min-width: 180px;
+    min-width: 190px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -156,11 +171,10 @@ button:active {
     overflow: hidden;
 }
 
-.dropdown-content.show {
-    display: block;
-}
+.dropdown-content.show { display: block; }
 
-.dropdown-content button, .dropdown-item-label {
+.dropdown-content button,
+.dropdown-item-label {
     width: 100%;
     padding: 10px 14px;
     text-align: left;
@@ -170,88 +184,85 @@ button:active {
     color: var(--text);
     font-size: 0.85rem;
     border-radius: 0;
-    box-sizing: border-box;
     display: block;
     cursor: pointer;
     font-weight: 600;
 }
 
-.dropdown-content button:last-child, .dropdown-item-label:last-child {
-    border-bottom: none;
-}
+.dropdown-content button:last-child,
+.dropdown-item-label:last-child { border-bottom: none; }
+.dropdown-content button:hover,
+.dropdown-item-label:hover { background-color: var(--input-bg); }
 
-.dropdown-content button:hover, .dropdown-item-label:hover {
-    background-color: var(--input-bg);
-}
-
-/* --- LISTE STRUCTURÉE LIGNE PAR LIGNE --- */
 .email-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 12px 15px 24px;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
 }
 
 .email-item {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 15px;
+    padding: 14px 12px 14px 15px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 12px;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.email-item:hover {
-    border-color: var(--primary);
-}
+.email-item:hover { border-color: var(--primary); }
+.email-item:active { transform: scale(0.995); }
 
-.email-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-}
+.email-info { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.email-title-row { font-weight: 700; font-size: 1rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.email-details-group { display: flex; flex-direction: column; gap: 3px; font-size: 0.82rem; color: var(--text-secondary); }
+.detail-line { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.detail-line.description-preview { white-space: pre-wrap; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-.email-title-row {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--text);
-}
-
-.email-details-group {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-.detail-line {
-    display: flex;
+.status-icon {
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    font-size: 0.95rem;
 }
 
-.email-item.triggered {
-    border-color: var(--danger);
-    animation: pulse-border 1.2s infinite alternate;
-}
+.status-icon.done { border-color: var(--success); }
+.status-icon.waiting { border-color: var(--warning); }
+.status-icon.not-started { border-color: var(--border); }
+
+.email-item.triggered { border-color: var(--danger); animation: pulse-border 1.2s infinite alternate; }
 
 @keyframes pulse-border {
     from { background-color: var(--card-bg); border-color: var(--danger); }
     to { background-color: rgba(239, 68, 68, 0.15); border-color: #f87171; }
 }
 
-/* --- MODALS ET OVERLAYS --- */
 .modal-overlay, .alarm-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed;
+    inset: 0;
     background: rgba(15, 23, 42, 0.8);
-    display: flex; justify-content: center; align-items: center;
-    padding: 20px; box-sizing: border-box;
-    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
     z-index: 1000;
 }
 
@@ -261,35 +272,50 @@ button:active {
     background: var(--modal-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 20px; width: 100%; max-width: 450px;
-    display: flex; flex-direction: column; gap: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 450px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    transform: translateY(20px); transition: transform 0.2s ease;
+    transform: translateY(20px);
+    transition: transform 0.2s ease;
 }
 
 .modal-overlay.active .modal-card { transform: translateY(0); }
-
-.modal-title {
-    font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text);
-    border-bottom: 1px solid var(--border); padding-bottom: 10px;
-}
-
+.modal-title { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
 .input-group { display: flex; flex-direction: column; gap: 5px; }
-.input-group label {
-    font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;
+.input-group label, .attachment-header { font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+
+input[type="text"], input[type="email"], input[type="datetime-local"], textarea, select {
+    width: 100%;
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text);
+    font-family: inherit;
 }
 
-input[type="text"], input[type="email"], input[type="datetime-local"] {
-    width: 100%; box-sizing: border-box; border: 1px solid var(--border);
-    padding: 10px 12px; font-size: 0.95rem; border-radius: 8px;
-    background: var(--input-bg); color: var(--text);
-}
+textarea { resize: vertical; min-height: 130px; line-height: 1.5; }
+select { appearance: auto; }
 
-.checkbox-container {
-    display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-secondary);
-}
+.attachment-section { display: flex; flex-direction: column; gap: 8px; }
+.attachment-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.attachment-add-btn { text-transform: none; font-size: 0.82rem; padding: 7px 10px; border-radius: 8px; background: var(--primary); color: white; cursor: pointer; }
+.attachment-list { display: flex; flex-direction: column; gap: 6px; }
+.empty-attachments { color: var(--text-secondary); font-size: 0.82rem; padding: 8px 0; }
+.attachment-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; }
+.attachment-name { flex: 1; min-width: 0; color: var(--text); font-size: 0.84rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attachment-action { width: 30px; height: 30px; padding: 0; border-radius: 7px; background: var(--border); color: var(--text); }
+.attachment-action.delete { background: var(--danger); color: white; }
+
+.checkbox-container { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-secondary); }
 input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
-
 .modal-alarm-btn { width: 100%; padding: 12px; font-size: 0.95rem; font-weight: 600; border-radius: 8px; }
 .modal-actions { display: flex; gap: 10px; margin-top: 5px; }
 .modal-actions button { flex: 1; padding: 12px; font-size: 0.95rem; }
@@ -301,3 +327,12 @@ input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary)
 @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
 .alarm-alert-actions { display: flex; flex-direction: column; gap: 8px; }
 .alarm-alert-actions button { padding: 12px; font-size: 1rem; }
+
+@media (max-width: 480px) {
+    .header { padding: 12px; gap: 10px; }
+    .email-list { padding: 10px 12px 20px; }
+    h1 { font-size: 1.15rem; }
+    .btn-icon { width: 34px; height: 34px; }
+    .modal-actions { flex-wrap: wrap; }
+    .modal-actions button { min-width: 30%; }
+}
