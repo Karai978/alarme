@@ -128,12 +128,11 @@
 
     <script src="script.js"></script>
     <script>
+        // Register early so PWA analyzers can detect the service worker reliably.
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log('Service Worker enregistré'))
-                    .catch((err) => console.error('Erreur SW:', err));
-            });
+            navigator.serviceWorker.register('./sw.js', { scope: './' })
+                .then((registration) => console.log('Service Worker enregistré:', registration.scope))
+                .catch((err) => console.error('Erreur SW:', err));
         }
     </script>
 </body>
