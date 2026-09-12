@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notes-alarme-complet-v11';
+const CACHE_NAME = 'notes-alarme-complet-v12';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -57,7 +57,7 @@ const UI_PATCH_CSS = `
 }
 .content-header > #tagBar:empty { display:none; }
 
-/* Robust Android/Chrome scrolling: only the note grid scrolls */
+/* Robust Android/Chrome scrolling: the note grid gets an explicit scroll viewport */
 .app-shell {
   min-height:0;
   height:100dvh;
@@ -91,6 +91,7 @@ const UI_PATCH_CSS = `
   padding-bottom:max(30px, env(safe-area-inset-bottom));
 }
 
+/* On Android, give the grid a real finite viewport so 50+ cards can scroll. */
 @media (max-width:720px) {
   .content-header { gap:6px; }
   .content-header > #tagBar { flex:1 1 auto; }
@@ -100,12 +101,22 @@ const UI_PATCH_CSS = `
     text-overflow:ellipsis;
   }
   .content-area { padding-top:14px; }
+  .notes-grid {
+    flex:0 0 auto;
+    height:max(180px, calc(100dvh - 520px));
+    max-height:calc(100dvh - 520px);
+    min-height:180px;
+  }
 }
 @media (max-width:390px) {
   .content-header { gap:5px; }
   .content-header > #viewTitle { font-size:1.05rem; }
   .content-header > #tagBar .tag-label { font-size:.66rem; }
   .content-header > #tagBar .tag-chip { font-size:.62rem; padding:3px 7px; }
+  .notes-grid {
+    height:max(170px, calc(100dvh - 500px));
+    max-height:calc(100dvh - 500px);
+  }
 }
 `;
 
