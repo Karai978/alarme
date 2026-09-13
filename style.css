@@ -125,3 +125,63 @@ input[type=text],input[type=email],input[type=datetime-local],textarea,select { 
 @media (max-width:430px) { .brand-mark{width:36px;height:36px;border-radius:11px}.icon-btn{width:36px;height:36px}.brand-text h1{font-size:1.05rem}.input-row{grid-template-columns:1fr}.modal-overlay,.alarm-overlay{padding:7px;align-items:flex-end}.modal-card,.alarm-alert-card{max-height:calc(100dvh - 7px);border-radius:19px 19px 11px 11px;padding:15px}.modal-actions{grid-template-columns:1fr 1fr}.modal-actions .btn-primary{grid-column:1/-1;grid-row:1}.modal-actions .btn-danger{grid-column:1}.modal-actions .btn-cancel{grid-column:2}.notes-grid{gap:9px}.note-card{min-height:145px}.note-card-main{padding:12px 11px}.content-header h2{font-size:1.13rem}.small-action{padding:7px 8px} }
 @media (max-width:350px) { .top-actions{gap:4px}.icon-btn{width:34px;height:34px}.filter-chip{padding-left:10px;padding-right:10px}.content-area{padding-left:8px;padding-right:8px} }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important} }
+
+/* DIRECT ANDROID NOTE-LIST SCROLL FIX */
+.workspace {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.content-area {
+  min-height: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.content-header,
+.tag-bar {
+  flex: 0 0 auto;
+}
+#emailList.notes-grid {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  align-content: start;
+  padding-bottom: max(30px, env(safe-area-inset-bottom));
+  scrollbar-width: thin;
+}
+@media (max-width:650px) {
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar {
+    flex: 0 0 48px;
+  }
+  .content-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+  }
+  #emailList.notes-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+}
+@media (max-width:390px) {
+  #emailList.notes-grid { gap: 9px; }
+}
