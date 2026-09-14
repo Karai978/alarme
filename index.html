@@ -10,57 +10,6 @@
     <title>Notes & Alarmes</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Unified dashboard search + filter */
-        .search-filter-row { display:grid; grid-template-columns:minmax(0,1fr) 150px; align-items:stretch; gap:0; width:100%; margin-top:13px; border:1px solid var(--border); border-radius:13px; background:var(--input-bg); overflow:hidden; }
-        .search-filter-row .search-wrap { margin:0; min-width:0; }
-        .search-filter-row .search-wrap input { height:44px; border:0; border-radius:0; background:transparent; box-shadow:none; }
-        .search-filter-row .search-wrap input:focus { box-shadow:none; }
-        .search-filter-row .filter-select-wrap { min-width:0; border-left:1px solid var(--border); }
-        .filter-select { width:100%; height:44px; min-height:44px; padding:0 30px 0 11px; border:0; border-radius:0; background:var(--card-bg); color:var(--text); font-size:.78rem; font-weight:750; outline:none; }
-        .filter-select:focus { box-shadow:inset 0 0 0 2px var(--primary); }
-        .smart-filters { display:none !important; }
-        .modal-overlay { align-items:center; justify-content:center; padding:16px; }
-        .modal-card { width:min(620px,100%); max-width:620px; max-height:min(90dvh,760px); padding:16px; gap:0; border-radius:18px; }
-        .modal-header { padding-bottom:8px; margin-bottom:9px; }
-        .modal-card .input-group { gap:4px; margin-bottom:8px; }
-        .modal-card input[type="text"], .modal-card input[type="datetime-local"], .modal-card select { min-height:40px; height:40px; padding:8px 10px; font-size:.86rem; }
-        .modal-card textarea { min-height:76px; height:76px; padding:8px 10px; font-size:.86rem; line-height:1.4; resize:vertical; }
-        .modal-card .input-row { gap:8px; margin-bottom:0; }
-        .status-feature-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; align-items:end; margin-bottom:8px; }
-        .status-feature-row .input-group { margin-bottom:0; }
-        .feature-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:0; min-height:40px; }
-        .feature-toggle { min-height:40px; height:40px; padding:6px 8px; border-radius:10px; font-size:.74rem; white-space:nowrap; }
-        .feature-toggle span { overflow:hidden; text-overflow:ellipsis; }
-        .feature-panel-label { display:block; margin-bottom:4px; color:var(--text-secondary); font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
-        .color-section { margin:0 0 8px; }
-        .color-section > label { display:block; margin-bottom:4px; }
-        #colorPicker { width:100%; min-height:40px; height:40px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--text); padding:8px 10px; font-size:.86rem; outline:none; }
-        #colorPicker:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(124,108,255,.1); }
-        .modal-card .attachment-section { gap:5px; margin-bottom:8px; }
-        .modal-card .attachment-item { padding:5px 8px; }
-        .modal-card .modal-alarm-btn { min-height:40px; height:40px; padding:7px 10px; margin-bottom:8px; }
-        .modal-card .modal-actions { display:grid; grid-template-columns:1fr 1fr 1.2fr; gap:7px; }
-        .modal-card .modal-actions button { min-height:40px; height:40px; padding:7px 9px; }
-        .modal-card small { font-size:.68rem; }
-        @media (max-width:720px) { .modal-card { width:min(560px,100%); max-height:92dvh; } .modal-card .input-row { grid-template-columns:1fr 1fr; } }
-        @media (max-width:520px) { .topbar { padding-left:12px; padding-right:12px; } .search-filter-row { grid-template-columns:minmax(0,1fr) 126px; } .filter-select { font-size:.73rem; padding-left:8px; padding-right:20px; } .modal-overlay { padding:10px; align-items:center; } .modal-card { width:100%; max-width:520px; max-height:94dvh; padding:13px; border-radius:16px; } .modal-card .input-row { grid-template-columns:1fr 1fr; gap:7px; } .status-feature-row { grid-template-columns:1fr 1fr; gap:7px; } .feature-row { gap:5px; } .feature-toggle { font-size:.7rem; } .modal-card textarea { height:70px; min-height:70px; } .modal-card .modal-actions { grid-template-columns:1fr 1fr 1.25fr; } }
-        @media (max-width:390px) { .search-filter-row { grid-template-columns:minmax(0,1fr) 112px; } .filter-select { font-size:.69rem; } .modal-card { padding:11px; } .modal-card .input-row { grid-template-columns:1fr; gap:0; } .status-feature-row { grid-template-columns:1fr; } .feature-row { grid-template-columns:1fr 1fr; } .modal-card .modal-actions { grid-template-columns:1fr 1fr; } .modal-card .modal-actions .btn-primary { grid-column:1 / -1; } }
-    </style>
-    <style>
-        /* Mobile folder menu: hidden behind one Dossiers button until opened */
-        @media (max-width:650px) {
-            .workspace { position:relative; display:block !important; overflow:hidden; }
-            .mobile-folder-bar { display:block !important; position:relative; z-index:200; padding:8px 10px 6px; background:var(--bg); border-bottom:1px solid var(--border); }
-            .mobile-folder-btn { width:100%; min-height:44px; display:flex; align-items:center; justify-content:space-between; padding:9px 13px; border:1px solid var(--border); border-radius:11px; background:var(--card-bg); color:var(--text); font-size:.82rem; font-weight:800; }
-            .sidebar { position:absolute !important; top:58px; left:10px; right:10px; width:auto !important; height:auto !important; max-height:min(65dvh,440px); min-height:0 !important; padding:10px !important; display:none !important; flex:none !important; z-index:300; overflow-y:auto !important; overflow-x:hidden !important; border:1px solid var(--border) !important; border-radius:14px; background:var(--bg-soft); box-shadow:var(--shadow); }
-            .sidebar.mobile-folder-open { display:block !important; }
-            .sidebar-heading { display:flex !important; position:sticky; top:0; z-index:2; background:var(--bg-soft); padding:2px 5px 8px; }
-            .category-list { display:block !important; width:100% !important; min-width:0 !important; height:auto !important; margin:0 !important; padding:0 !important; overflow:visible !important; }
-            .folder-item, .category-list .folder-item { width:100% !important; min-width:0 !important; min-height:42px; height:42px; margin:0 0 4px !important; padding:8px 10px; display:flex !important; }
-            .content-area { height:calc(100dvh - 58px); min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-        }
-    </style>
 </head>
 <body>
 <div class="app-shell">
@@ -73,6 +22,7 @@
             </div>
             <div class="top-actions">
                 <button class="icon-btn" onclick="enableAudio()" title="Activer le son" aria-label="Activer le son">🔔</button>
+                <button id="mobileFolderBtn" class="icon-btn folder-icon-btn" type="button" onclick="toggleFolders()" title="Dossiers" aria-label="Dossiers" aria-expanded="false" aria-controls="mobileFolderPanel">📁</button>
                 <button class="icon-btn" onclick="openModal()" title="Nouvelle note" aria-label="Nouvelle note">＋</button>
                 <button class="icon-btn" onclick="toggleTheme()" title="Changer de thème" aria-label="Changer de thème"><span id="themeIcon">☀️</span></button>
             </div>
@@ -84,7 +34,6 @@
         <div class="smart-filters" role="tablist" aria-label="Filtres"><button class="filter-chip active" data-filter="todo">À faire</button><button class="filter-chip" data-filter="favorite">★ Favoris</button><button class="filter-chip" data-filter="pinned">📌 Épinglés</button><button class="filter-chip" data-filter="waiting">⏳ En attente</button><button class="filter-chip" data-filter="done">✓ Terminées</button></div>
     </header>
     <div class="workspace">
-        <div class="mobile-folder-bar"><button id="mobileFolderBtn" class="mobile-folder-btn" type="button" onclick="toggleFolders()" aria-expanded="false" aria-controls="mobileFolderPanel"><span>📁</span><span id="folderChevron">⌄</span></button></div>
         <aside id="mobileFolderPanel" class="sidebar" aria-label="Catégories">
             <div class="sidebar-heading"><span>Dossiers</span><button class="mini-btn" onclick="addCategory()" title="Ajouter un dossier">＋</button></div>
             <button class="folder-item active" data-category="all" onclick="setCategory('all')"><span>▦</span><span>Toutes les notes</span><b id="allCount">0</b></button>
