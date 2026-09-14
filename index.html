@@ -10,6 +10,7 @@
     <title>Notes & Alarmes</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal-icons.css">
 </head>
 <body>
 <div class="app-shell">
@@ -47,21 +48,33 @@
 </div>
 <div id="noteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitleHeading">
     <div class="modal-card">
-        <div class="modal-header"><div><span class="eyebrow">NOTE</span><h2 id="modalTitleHeading">Nouvelle note</h2></div><button class="modal-close" onclick="closeModal()" aria-label="Fermer">×</button></div>
+        <div class="modal-header">
+            <div><span class="eyebrow">NOTE</span><h2 id="modalTitleHeading">Nouvelle note</h2></div>
+            <div class="modal-header-options" aria-label="Options de la note">
+                <button id="favoriteBtn" class="feature-toggle" type="button" onclick="toggleNoteFlag('favorite')" aria-label="Ajouter aux favoris" aria-pressed="false" title="Ajouter aux favoris"></button>
+                <button id="pinnedBtn" class="feature-toggle" type="button" onclick="toggleNoteFlag('pinned')" aria-label="Épingler la note" aria-pressed="false" title="Épingler la note"></button>
+            </div>
+            <button class="modal-close" onclick="closeModal()" aria-label="Fermer" title="Fermer">×</button>
+        </div>
         <div class="input-group"><label for="modalEmail">Titre / Adresse mail</label><input type="text" id="modalEmail" placeholder="Ex. Appeler le client ou nom@exemple.com"></div>
         <div class="input-row"><div class="input-group"><label for="modalCategory">Dossier</label><select id="modalCategory"></select></div><div class="input-group"><label for="modalDatetime">Date & heure</label><input type="datetime-local" id="modalDatetime"></div></div>
         <div class="input-group"><label for="modalDesc">Description</label><textarea id="modalDesc" rows="3" placeholder="Écrivez votre note..." spellcheck="true"></textarea></div>
-        <div class="status-feature-row"><div class="input-group"><label for="modalStatus">Statut</label><select id="modalStatus"><option value="not_started">○ Pas démarré</option><option value="waiting">⏳ En attente</option><option value="done">✓ Terminé</option></select></div><div><span class="feature-panel-label">Options</span><div class="feature-row"><button id="favoriteBtn" class="feature-toggle" onclick="toggleNoteFlag('favorite')">☆ <span>Favori</span></button><button id="pinnedBtn" class="feature-toggle" onclick="toggleNoteFlag('pinned')">📌 <span>Épingler</span></button></div></div></div>
+        <div class="input-group"><label for="modalStatus">Statut</label><select id="modalStatus"><option value="not_started">○ Pas démarré</option><option value="waiting">⏳ En attente</option><option value="done">✓ Terminé</option></select></div>
         <div class="legacy-hidden-controls" aria-hidden="true"><input id="modalTags" type="hidden" value=""><div id="colorPicker"></div></div>
         <div class="attachment-section"><div class="attachment-header"><span>Pièces jointes</span><label class="attachment-add-btn">＋ Ajouter<input type="file" id="attachmentInput" accept=".md,.txt,.json,text/markdown,text/plain,application/json" hidden onchange="addAttachment(event)"></label></div><div id="attachmentList" class="attachment-list"><span class="empty-attachments">Aucune pièce jointe</span></div></div>
-        <button type="button" id="modalAlarmBtn" class="modal-alarm-btn btn-success" onclick="toggleModalAlarm()">🔔 Activer l’alarme</button>
-        <div class="modal-actions"><button class="btn-danger" id="modalDeleteBtn" onclick="deleteCurrentNote()">Supprimer</button><button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-primary" onclick="saveCurrentNote()">Enregistrer</button></div>
+        <div class="modal-actions">
+            <button type="button" id="modalAlarmBtn" class="modal-alarm-btn modal-icon-action btn-success" onclick="toggleModalAlarm()" aria-label="Activer l’alarme" title="Activer l’alarme"></button>
+            <button type="button" class="btn-primary modal-icon-action" onclick="saveCurrentNote()" aria-label="Enregistrer" title="Enregistrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path></svg></button>
+            <button type="button" class="btn-danger modal-icon-action" id="modalDeleteBtn" onclick="deleteCurrentNote()" aria-label="Supprimer" title="Supprimer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 15H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></button>
+            <button type="button" class="btn-cancel modal-icon-action" onclick="closeModal()" aria-label="Annuler" title="Annuler"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+        </div>
     </div>
 </div>
 <div id="alarmOverlay" class="alarm-overlay"><div class="alarm-alert-card"><div class="alarm-pulse-icon">⏰</div><span class="eyebrow">RAPPEL</span><h2>Alarme déclenchée</h2><p id="alarmAlertInfo" class="alarm-info-text">Détails...</p><div class="alarm-alert-actions"><button class="btn-danger" onclick="stopActiveAlarm()">Stopper</button><button class="btn-warning" onclick="snoozeActiveAlarm(5)">Snooze +5 min</button><button class="btn-secondary" onclick="snoozeActiveAlarm(10)">Snooze +10 min</button></div></div></div>
 <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 <audio id="alarmAudio" src="alarm.mp3" preload="auto" loop></audio>
 <script src="script.js"></script>
+<script src="modal-icons.js"></script>
 <script>
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(reg=>console.log('Service Worker enregistré:',reg.scope)).catch(err=>console.error('Erreur SW:',err)); }
 </script>
