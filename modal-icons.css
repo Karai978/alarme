@@ -1,104 +1,111 @@
 .modal-header {
-    align-items:center;
+    align-items: center;
 }
 
 .modal-header-options {
-    display:flex;
-    align-items:center;
-    gap:6px;
-    margin-left:auto;
-    margin-right:4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    margin-right: 4px;
 }
 
 .modal-header-options .feature-toggle {
-    width:36px;
-    height:36px;
-    min-height:36px;
-    padding:0;
-    display:grid;
-    place-items:center;
-    border-radius:10px;
-    font-size:1.05rem;
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.05rem;
 }
 
 .modal-header-options .feature-toggle.selected {
-    color:var(--primary);
-    border-color:var(--primary);
-    background:rgba(124,108,255,.14);
+    color: var(--text);
+    border-color: var(--border-strong);
+    background: var(--input-bg);
 }
 
 .modal-header-options .feature-toggle svg,
 .modal-actions .modal-icon-action svg {
-    width:19px;
-    height:19px;
-    display:block;
-    stroke:currentColor;
-    fill:none;
-    stroke-width:2;
-    stroke-linecap:round;
-    stroke-linejoin:round;
+    width: 19px;
+    height: 19px;
+    display: block;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
+/* Les 4 actions restent toujours sur une seule ligne horizontale. */
 .modal-actions {
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    align-items:center;
-    gap:8px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    flex-wrap: nowrap;
 }
 
-.modal-actions .modal-icon-action {
-    width:100%;
-    min-height:43px;
-    height:43px;
-    padding:0;
-    margin:0;
-    display:grid;
-    place-items:center;
-    border-radius:10px;
-    font-weight:700;
-}
-
+.modal-actions .modal-icon-action,
 .modal-actions .modal-alarm-btn {
-    width:100%;
-    min-height:43px;
-    height:43px;
-    margin:0;
-    padding:0;
+    width: 100%;
+    min-width: 0;
+    min-height: 43px;
+    height: 43px;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-weight: 700;
+    background: var(--input-bg) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border-strong);
+    box-shadow: none;
 }
 
-.modal-actions .modal-icon-action.btn-danger {
-    background:var(--danger);
-    color:#fff;
+.modal-actions .modal-icon-action:hover,
+.modal-actions .modal-alarm-btn:hover {
+    background: var(--card-hover) !important;
+    border-color: var(--text-secondary);
 }
 
-.modal-actions .modal-icon-action.btn-cancel {
-    background:var(--border-strong);
-    color:var(--text);
+.modal-actions .modal-icon-action:focus-visible,
+.modal-actions .modal-alarm-btn:focus-visible {
+    outline: 2px solid var(--text-secondary);
+    outline-offset: 2px;
 }
 
-.modal-actions .modal-icon-action.btn-primary {
-    background:var(--primary);
-    color:#fff;
-}
-
-@media (max-width:650px) {
+@media (max-width: 650px) {
     .modal-header-options {
-        gap:4px;
-        margin-right:2px;
+        gap: 4px;
+        margin-right: 2px;
     }
 
     .modal-header-options .feature-toggle {
-        width:34px;
-        height:34px;
-        min-height:34px;
+        width: 34px;
+        height: 34px;
+        min-height: 34px;
     }
 
     .modal-actions {
-        gap:7px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
     }
 
     .modal-actions .modal-icon-action,
     .modal-actions .modal-alarm-btn {
-        min-height:42px;
-        height:42px;
+        min-height: 40px;
+        height: 40px;
+        border-radius: 9px;
+    }
+
+    .modal-actions .modal-icon-action svg,
+    .modal-actions .modal-alarm-btn svg {
+        width: 18px;
+        height: 18px;
     }
 }
