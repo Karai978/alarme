@@ -226,7 +226,12 @@
     </header>
 
     <div class="workspace">
-        <aside class="sidebar" aria-label="Catégories">
+        <div class="mobile-folder-bar">
+            <button id="mobileFolderBtn" class="mobile-folder-btn" type="button" onclick="toggleFolders()" aria-expanded="false" aria-controls="mobileFolderPanel">
+                <span>📁 Dossiers</span><span id="folderChevron">⌄</span>
+            </button>
+        </div>
+        <aside id="mobileFolderPanel" class="sidebar" aria-label="Catégories">
             <div class="sidebar-heading"><span>Dossiers</span><button class="mini-btn" onclick="addCategory()" title="Ajouter un dossier">＋</button></div>
             <button class="folder-item active" data-category="all" onclick="setCategory('all')"><span>▦</span><span>Toutes les notes</span><b id="allCount">0</b></button>
             <div id="categoryList" class="category-list"></div>

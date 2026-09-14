@@ -97,6 +97,26 @@ function setFilter(filter, labelText) {
     renderList();
 }
 
+function toggleFolders() {
+    const panel = document.getElementById('mobileFolderPanel');
+    const button = document.getElementById('mobileFolderBtn');
+    const chevron = document.getElementById('folderChevron');
+    if (!panel || !button) return;
+    const open = panel.classList.toggle('mobile-folder-open');
+    button.setAttribute('aria-expanded', String(open));
+    if (chevron) chevron.textContent = open ? '⌃' : '⌄';
+}
+
+function closeFolders() {
+    const panel = document.getElementById('mobileFolderPanel');
+    const button = document.getElementById('mobileFolderBtn');
+    const chevron = document.getElementById('folderChevron');
+    if (!panel) return;
+    panel.classList.remove('mobile-folder-open');
+    if (button) button.setAttribute('aria-expanded', 'false');
+    if (chevron) chevron.textContent = '⌄';
+}
+
 function setCategory(categoryId) {
     currentCategory = categoryId;
     document.querySelectorAll('.folder-item').forEach(btn => btn.classList.toggle('active', btn.dataset.category === categoryId));
@@ -104,6 +124,7 @@ function setCategory(categoryId) {
     if (category) { document.getElementById('viewTitle').textContent = category.name; document.getElementById('viewSubtitle').textContent = 'Notes de ce dossier'; }
     else if (categoryId === 'all') setFilter(currentFilter, '');
     renderList();
+    closeFolders();
 }
 
 function addCategory() {
