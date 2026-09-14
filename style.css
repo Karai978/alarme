@@ -122,47 +122,92 @@ input[type=text],input[type=email],input[type=datetime-local],textarea,select { 
 .toast-container { position:fixed; z-index:3000; left:50%; bottom:max(20px,env(safe-area-inset-bottom)); transform:translateX(-50%); display:flex; flex-direction:column; gap:7px; pointer-events:none; }.toast { background:#111827; color:#fff; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:9px 13px; font-size:.78rem; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:.18s; }.toast.show { opacity:1; transform:translateY(0); }
 @media (max-width:850px) { .sidebar { width:195px; flex-basis:195px; } .notes-grid { grid-template-columns:1fr; } }
 @media (max-width:650px) {
-  .topbar { padding-left:12px; padding-right:12px; }
-  .workspace { display:flex; flex-direction:column; min-height:0; height:auto; overflow:hidden; }
-  .sidebar { width:100%; height:48px; flex:0 0 48px; padding:5px 10px; border-right:0; border-bottom:1px solid var(--border); overflow-x:auto; overflow-y:hidden; display:flex; align-items:center; gap:5px; }
-  .sidebar-heading { flex:0 0 auto; padding:0 3px; }
-  .sidebar-heading span { display:none; }
-  .mini-btn { width:31px; height:31px; }
-  .folder-item { flex:0 0 auto; width:auto; min-height:33px; margin:0; padding:6px 9px; white-space:nowrap; }
-  .folder-item span:nth-child(2){max-width:120px}
-  .content-area { flex:1 1 auto; min-height:0; height:auto; overflow:hidden; padding:13px 11px max(10px,env(safe-area-inset-bottom)); display:flex; flex-direction:column; }
-  .content-header { flex:0 0 auto; }
-  .tag-bar { flex:0 0 auto; }
-  #emailList.notes-grid { flex:1 1 auto; min-width:0; min-height:0; width:100%; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y; align-content:start; padding-bottom:max(30px,env(safe-area-inset-bottom)); }
+  html, body { width:100%; height:100%; overflow:hidden; }
+  .app-shell { width:100%; height:100dvh; min-height:0; max-width:none; overflow:hidden; }
+  .topbar { flex:0 0 auto; padding-left:12px; padding-right:12px; }
+  .workspace { display:flex; flex-direction:column; flex:1 1 auto; min-height:0; height:auto; overflow:hidden; }
+  .sidebar { width:100%; height:56px; flex:0 0 56px; min-width:0; min-height:56px; padding:5px 8px; border-right:0; border-bottom:1px solid var(--border); overflow-x:auto; overflow-y:hidden; display:flex !important; align-items:center; gap:5px; background:var(--bg-soft); visibility:visible; }
+  .sidebar-heading { flex:0 0 auto; display:flex; align-items:center; padding:0 2px; }
+  .sidebar-heading span { display:block; font-size:.65rem; white-space:nowrap; }
+  .mini-btn { width:31px; height:31px; flex:0 0 31px; }
+  .folder-item { flex:0 0 auto; width:auto; min-width:max-content; min-height:38px; height:38px; margin:0; padding:7px 10px; white-space:nowrap; display:flex; }
+  .folder-item span:nth-child(2) { flex:0 0 auto; max-width:125px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .category-list { display:flex !important; flex:0 0 auto; align-items:center; gap:5px; width:max-content; min-width:max-content; }
+  .category-list .folder-item { flex:0 0 auto; width:auto; margin:0; }
+  .content-area { flex:1 1 auto; min-width:0; min-height:0; height:auto; overflow:hidden; padding:13px 11px max(10px,env(safe-area-inset-bottom)); display:flex; flex-direction:column; }
+  .content-header, .tag-bar { flex:0 0 auto; }
+  #emailList.notes-grid { flex:1 1 auto; min-width:0; min-height:0; width:100%; height:auto; max-height:none; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y; align-content:start; padding-bottom:max(30px,env(safe-area-inset-bottom)); }
+  .notes-grid { grid-template-columns:1fr; }
+  .note-card { width:100%; min-width:0; }
 }
 @media (max-width:430px) { .brand-mark{width:36px;height:36px;border-radius:11px}.icon-btn{width:36px;height:36px}.brand-text h1{font-size:1.05rem}.input-row{grid-template-columns:1fr}.modal-overlay,.alarm-overlay{padding:7px;align-items:flex-end}.modal-card,.alarm-alert-card{max-height:calc(100dvh - 7px);border-radius:19px 19px 11px 11px;padding:15px}.modal-actions{grid-template-columns:1fr 1fr}.modal-actions .btn-primary{grid-column:1/-1;grid-row:1}.modal-actions .btn-danger{grid-column:1}.modal-actions .btn-cancel{grid-column:2}.notes-grid{gap:9px}.note-card{min-height:145px}.note-card-main{padding:12px 11px}.content-header h2{font-size:1.13rem}.small-action{padding:7px 8px} }
 @media (max-width:350px) { .top-actions{gap:4px}.icon-btn{width:34px;height:34px}.filter-chip{padding-left:10px;padding-right:10px}.content-area{padding-left:8px;padding-right:8px} }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important} }
 
-/* Android responsive layout: the app stays fixed while only the notes list scrolls. */
-@media (max-width:650px) {
-  html, body { width:100%; height:100%; overflow:hidden; }
-  .app-shell { width:100%; height:100dvh; min-height:0; max-width:none; overflow:hidden; }
-  .topbar { flex:0 0 auto; }
-  .workspace { flex:1 1 auto; min-height:0; height:auto; }
-  .content-area { min-height:0; }
-  .notes-grid { grid-template-columns:1fr; }
-  #emailList.notes-grid { flex:1 1 auto; min-height:0; max-height:none; height:auto; }
-  .note-card { width:100%; min-width:0; }
+/* Copied from the inline <style> block in index.html. */
+.search-filter-row {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 150px;
+    align-items:stretch;
+    gap:0;
+    width:100%;
+    margin-top:13px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--input-bg);
+    overflow:hidden;
 }
-
-@media (max-width:380px) {
-  .topbar { padding-top:max(10px,env(safe-area-inset-top)); padding-bottom:9px; }
-  .brand-row { gap:8px; }
-  .brand-mark { width:34px; height:34px; }
-  .icon-btn { width:34px; height:34px; }
-  .search-wrap { margin-top:9px; }
-  .search-wrap input { height:40px; }
-  .smart-filters { padding-top:8px; }
-  .content-area { padding:10px 8px max(8px,env(safe-area-inset-bottom)); }
-  .content-header { margin-bottom:7px; }
-  .content-header h2 { font-size:1.05rem; }
-  .content-header span { font-size:.7rem; }
-  .small-action { padding:6px 7px; }
-  .note-card { min-height:138px; border-radius:14px; }
+.search-filter-row .search-wrap { margin:0; min-width:0; }
+.search-filter-row .search-wrap input { height:44px; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.search-filter-row .search-wrap input:focus { box-shadow:none; }
+.search-filter-row .filter-select-wrap { min-width:0; border-left:1px solid var(--border); }
+.filter-select { width:100%; height:44px; min-height:44px; padding:0 30px 0 11px; border:0; border-radius:0; background:var(--card-bg); color:var(--text); font-size:.78rem; font-weight:750; outline:none; }
+.filter-select:focus { box-shadow:inset 0 0 0 2px var(--primary); }
+.smart-filters { display:none !important; }
+.modal-overlay { align-items:center; justify-content:center; padding:16px; }
+.modal-card { width:min(620px,100%); max-width:620px; max-height:min(90dvh,760px); padding:16px; gap:0; border-radius:18px; }
+.modal-header { padding-bottom:8px; margin-bottom:9px; }
+.modal-card .input-group { gap:4px; margin-bottom:8px; }
+.modal-card input[type="text"], .modal-card input[type="datetime-local"], .modal-card select { min-height:40px; height:40px; padding:8px 10px; font-size:.86rem; }
+.modal-card textarea { min-height:76px; height:76px; padding:8px 10px; font-size:.86rem; line-height:1.4; resize:vertical; }
+.modal-card .input-row { gap:8px; margin-bottom:0; }
+.status-feature-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; align-items:end; margin-bottom:8px; }
+.status-feature-row .input-group { margin-bottom:0; }
+.feature-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:0; min-height:40px; }
+.feature-toggle { min-height:40px; height:40px; padding:6px 8px; border-radius:10px; font-size:.74rem; white-space:nowrap; }
+.feature-toggle span { overflow:hidden; text-overflow:ellipsis; }
+.feature-panel-label { display:block; margin-bottom:4px; color:var(--text-secondary); font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+.color-section { margin:0 0 8px; }
+.color-section > label { display:block; margin-bottom:4px; }
+#colorPicker { width:100%; min-height:40px; height:40px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--text); padding:8px 10px; font-size:.86rem; outline:none; }
+#colorPicker:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(124,108,255,.1); }
+.modal-card .attachment-section { gap:5px; margin-bottom:8px; }
+.modal-card .attachment-item { padding:5px 8px; }
+.modal-card .modal-alarm-btn { min-height:40px; height:40px; padding:7px 10px; margin-bottom:8px; }
+.modal-card .modal-actions { display:grid; grid-template-columns:1fr 1fr 1.2fr; gap:7px; }
+.modal-card .modal-actions button { min-height:40px; height:40px; padding:7px 9px; }
+.modal-card small { font-size:.68rem; }
+@media (max-width:720px) { .modal-card { width:min(560px,100%); max-height:92dvh; } .modal-card .input-row { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px) {
+    .topbar { padding-left:12px; padding-right:12px; }
+    .search-filter-row { grid-template-columns:minmax(0,1fr) 126px; }
+    .filter-select { font-size:.73rem; padding-left:8px; padding-right:20px; }
+    .modal-overlay { padding:10px; align-items:center; }
+    .modal-card { width:100%; max-width:520px; max-height:94dvh; padding:13px; border-radius:16px; }
+    .modal-card .input-row { grid-template-columns:1fr 1fr; gap:7px; }
+    .status-feature-row { grid-template-columns:1fr 1fr; gap:7px; }
+    .feature-row { gap:5px; }
+    .feature-toggle { font-size:.7rem; }
+    .modal-card textarea { height:70px; min-height:70px; }
+    .modal-card .modal-actions { grid-template-columns:1fr 1fr 1.25fr; }
+}
+@media (max-width:390px) {
+    .search-filter-row { grid-template-columns:minmax(0,1fr) 112px; }
+    .filter-select { font-size:.69rem; }
+    .modal-card { padding:11px; }
+    .modal-card .input-row { grid-template-columns:1fr; gap:0; }
+    .status-feature-row { grid-template-columns:1fr; }
+    .feature-row { grid-template-columns:1fr 1fr; }
+    .modal-card .modal-actions { grid-template-columns:1fr 1fr; }
+    .modal-card .modal-actions .btn-primary { grid-column:1 / -1; }
 }
