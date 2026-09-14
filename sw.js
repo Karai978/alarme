@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notes-alarme-complet-v17';
+const CACHE_NAME = 'notes-alarme-complet-v18';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
