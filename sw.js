@@ -1,9 +1,11 @@
-const CACHE_NAME = 'notes-alarme-complet-v18';
+const CACHE_NAME = 'notes-alarme-complet-v19';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
+  './modal-icons.css',
   './script.js',
+  './modal-icons.js',
   './manifest.json',
   './alarm.mp3',
   './icon-192.png',
