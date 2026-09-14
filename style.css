@@ -121,67 +121,48 @@ input[type=text],input[type=email],input[type=datetime-local],textarea,select { 
 .alarm-overlay { z-index:2000; background:rgba(2,6,23,.93); }.alarm-alert-card { max-width:430px; text-align:center; border:1px solid rgba(239,68,68,.6); }.alarm-pulse-icon { font-size:3rem; animation:bounce .8s infinite alternate; }.alarm-alert-card h2 { margin:3px 0 5px; }.alarm-info-text { color:var(--text-secondary); line-height:1.5; overflow-wrap:anywhere; }.alarm-alert-actions { display:grid; gap:8px; margin-top:15px; }.alarm-alert-actions button { min-height:43px; border-radius:10px; font-weight:750; }
 .toast-container { position:fixed; z-index:3000; left:50%; bottom:max(20px,env(safe-area-inset-bottom)); transform:translateX(-50%); display:flex; flex-direction:column; gap:7px; pointer-events:none; }.toast { background:#111827; color:#fff; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:9px 13px; font-size:.78rem; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:.18s; }.toast.show { opacity:1; transform:translateY(0); }
 @media (max-width:850px) { .sidebar { width:195px; flex-basis:195px; } .notes-grid { grid-template-columns:1fr; } }
-@media (max-width:650px) { .topbar { padding-left:12px; padding-right:12px; }.workspace{display:block;overflow:hidden}.sidebar { width:100%; height:48px; padding:5px 10px; border-right:0; border-bottom:1px solid var(--border); overflow-x:auto; overflow-y:hidden; display:flex; align-items:center; gap:5px; }.sidebar-heading { flex:0 0 auto; padding:0 3px; }.sidebar-heading span { display:none; }.mini-btn { width:31px; height:31px; }.folder-item { flex:0 0 auto; width:auto; min-height:33px; margin:0; padding:6px 9px; white-space:nowrap; }.folder-item span:nth-child(2){max-width:120px}.folder-item b{display:none}.content-area { height:calc(100% - 48px); padding:13px 11px max(22px,env(safe-area-inset-bottom)); } }
+@media (max-width:650px) {
+  .topbar { padding-left:12px; padding-right:12px; }
+  .workspace { display:flex; flex-direction:column; min-height:0; height:auto; overflow:hidden; }
+  .sidebar { width:100%; height:48px; flex:0 0 48px; padding:5px 10px; border-right:0; border-bottom:1px solid var(--border); overflow-x:auto; overflow-y:hidden; display:flex; align-items:center; gap:5px; }
+  .sidebar-heading { flex:0 0 auto; padding:0 3px; }
+  .sidebar-heading span { display:none; }
+  .mini-btn { width:31px; height:31px; }
+  .folder-item { flex:0 0 auto; width:auto; min-height:33px; margin:0; padding:6px 9px; white-space:nowrap; }
+  .folder-item span:nth-child(2){max-width:120px}
+  .content-area { flex:1 1 auto; min-height:0; height:auto; overflow:hidden; padding:13px 11px max(10px,env(safe-area-inset-bottom)); display:flex; flex-direction:column; }
+  .content-header { flex:0 0 auto; }
+  .tag-bar { flex:0 0 auto; }
+  #emailList.notes-grid { flex:1 1 auto; min-width:0; min-height:0; width:100%; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y; align-content:start; padding-bottom:max(30px,env(safe-area-inset-bottom)); }
+}
 @media (max-width:430px) { .brand-mark{width:36px;height:36px;border-radius:11px}.icon-btn{width:36px;height:36px}.brand-text h1{font-size:1.05rem}.input-row{grid-template-columns:1fr}.modal-overlay,.alarm-overlay{padding:7px;align-items:flex-end}.modal-card,.alarm-alert-card{max-height:calc(100dvh - 7px);border-radius:19px 19px 11px 11px;padding:15px}.modal-actions{grid-template-columns:1fr 1fr}.modal-actions .btn-primary{grid-column:1/-1;grid-row:1}.modal-actions .btn-danger{grid-column:1}.modal-actions .btn-cancel{grid-column:2}.notes-grid{gap:9px}.note-card{min-height:145px}.note-card-main{padding:12px 11px}.content-header h2{font-size:1.13rem}.small-action{padding:7px 8px} }
 @media (max-width:350px) { .top-actions{gap:4px}.icon-btn{width:34px;height:34px}.filter-chip{padding-left:10px;padding-right:10px}.content-area{padding-left:8px;padding-right:8px} }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important} }
 
-/* DIRECT ANDROID NOTE-LIST SCROLL FIX */
-.workspace {
-  min-height: 0;
-  flex: 1 1 auto;
-  overflow: hidden;
-}
-.content-area {
-  min-height: 0;
-  min-width: 0;
-  flex: 1 1 auto;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.content-header,
-.tag-bar {
-  flex: 0 0 auto;
-}
-#emailList.notes-grid {
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  align-content: start;
-  padding-bottom: max(30px, env(safe-area-inset-bottom));
-  scrollbar-width: thin;
-}
+/* Android responsive layout: the app stays fixed while only the notes list scrolls. */
 @media (max-width:650px) {
-  .workspace {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .sidebar {
-    flex: 0 0 48px;
-  }
-  .content-area {
-    flex: 1 1 auto;
-    min-height: 0;
-    height: auto;
-    overflow: hidden;
-  }
-  #emailList.notes-grid {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-  }
+  html, body { width:100%; height:100%; overflow:hidden; }
+  .app-shell { width:100%; height:100dvh; min-height:0; max-width:none; overflow:hidden; }
+  .topbar { flex:0 0 auto; }
+  .workspace { flex:1 1 auto; min-height:0; height:auto; }
+  .content-area { min-height:0; }
+  .notes-grid { grid-template-columns:1fr; }
+  #emailList.notes-grid { flex:1 1 auto; min-height:0; max-height:none; height:auto; }
+  .note-card { width:100%; min-width:0; }
 }
-@media (max-width:390px) {
-  #emailList.notes-grid { gap: 9px; }
+
+@media (max-width:380px) {
+  .topbar { padding-top:max(10px,env(safe-area-inset-top)); padding-bottom:9px; }
+  .brand-row { gap:8px; }
+  .brand-mark { width:34px; height:34px; }
+  .icon-btn { width:34px; height:34px; }
+  .search-wrap { margin-top:9px; }
+  .search-wrap input { height:40px; }
+  .smart-filters { padding-top:8px; }
+  .content-area { padding:10px 8px max(8px,env(safe-area-inset-bottom)); }
+  .content-header { margin-bottom:7px; }
+  .content-header h2 { font-size:1.05rem; }
+  .content-header span { font-size:.7rem; }
+  .small-action { padding:6px 7px; }
+  .note-card { min-height:138px; border-radius:14px; }
 }
